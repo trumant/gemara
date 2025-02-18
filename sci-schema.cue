@@ -1,28 +1,25 @@
-import (
-  "time"
-)
-
 #Control: {
     id: string
     title: string
     objective: string
     family: string
     threats: [...string]
-    mappings: [...#Mapping]
     "assessment-requirements": [...#Requirement]
+
+    mappings?: [...#Mapping]
 }
 
 #Mapping: {
     framework: string
     version: string
-    controls: [...string]
+    "control-ids": [...string]
 }
 
 #Requirement: {
     id: string
     text: string
-    "recommended-implementation"?: string
     applicability: [...string]
+    "recommended-implementation"?: string
 }
 
 "common-controls"?: [...#Mapping]
