@@ -1,6 +1,6 @@
-# SCI: Schema
+# SCI: Simplified Compliance Infrastructure
 
-This repository contains the schema for the _Simplified Controls Infrastructure_.
+This repository contains the schema and documentation related to the _Simplified Controls Infrastructure_.
 
 Controls that follow the SCI schema will be compatible with any SCI tooling. 
 
