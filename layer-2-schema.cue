@@ -10,6 +10,8 @@ capabilities?: [...#Capability]
 "shared-threats"?: [...#Threat]
 "shared-capabilities"?: [...#Capability]
 
+"mapping-references"?: [...#MappingReference]
+
 // Resuable types //
 
 #Metadata: {
@@ -25,7 +27,6 @@ capabilities?: [...#Capability]
     title: string
     objective: string
     family: string
-    threats: [...string]
     "assessment-requirements": [...#Requirement]
 
     category?: string
@@ -50,12 +51,16 @@ capabilities?: [...#Capability]
     category?: string
 }
 
-#Mapping: {
-    framework: string
+#MappingReference: {
+    id: string
+    title: string
     version: string
-    identifiers: [...string]
-
     url?: =~"^https?://[^\\s]+$"
+}
+
+#Mapping: {
+    "reference-id": string
+    identifiers: [...string]
 }
 
 #Requirement: {
