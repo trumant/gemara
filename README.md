@@ -1,12 +1,14 @@
 # SCI: Simplified Compliance Infrastructure
 
-The _Simplified Compliance Infrastructure_ is a model to describe the categories of compliance activities, how they interact, and the schemas to allow for interoperability between them.
+The _Simplified Compliance Infrastructure_ provides a model to describe the categories of compliance activities, how they interact, and the schemas to allow for interoperability between them.
 
 In order to better facilitate cross-functional communication, the SCI Model seeks to outline the categorical layers of activities related to automated governance.
 
-The rest of this section will begin by establishing the overall model, and then the following sections will contain detailed breakdowns of each categorical layer, with examples.
+We will begin by establishing the overall model, and then the following sections will contain detailed breakdowns of each categorical layer, with examples.
 
 This document assumes that the reader is trained in governance, risk, compliance, or cybersecurity— and therefore understands or can find definitions of concepts or terms that are infrequently used herein.
+
+For the purpose of this document, "organization" may refer to a business or an organizational unit within it.
 
 ## The Model
 
@@ -67,7 +69,7 @@ Enforcement may be built based on Layer 4 assessments. This layer ensures that t
 
 Activities in the Audit layer provide monitoring, logging, and reporting on deployed resource state.
 
-Auditing may be built based on Layer 5 enforcement, or other requirements of the organization — such as cost monitoring. This layer ensures that the organization is able to monitor the state of deployed resources and report on their compliance with the organization's policies.
+Auditing may be built based on Layer 4 assessment results, informed by Layer 5 enforcement remediation activities, while considering other requirements of the organization — such as cost monitoring. This layer ensures that the organization is able to monitor the state of deployed resources and report on their compliance with the organization's policies.
 
 ## Tooling
 
