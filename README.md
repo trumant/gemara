@@ -17,7 +17,7 @@ Each layer in the model builds upon the lower layer, though in higher-level use 
 | Layer | Name | Description |
 |-------|------|-------------|
 | 1 | Framework | High-level guidance on cybersecurity measures |
-| 2 | Control | Technology-specific, threat-informed security controls |
+| 2 | Controls | Technology-specific, threat-informed security controls |
 | 3 | Policy | Risk-informed governance rules tailored to an organization |
 | 4 | Assessment | Inspection of code, configurations, and deployments |
 | 5 | Enforcement | Prevention or remediation based on assessment findings |
@@ -31,11 +31,11 @@ Frameworks may express their guidance in the form of Layer 1 Controls, which are
 
 Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GDPR, and CRA — among others.
 
-### Layer 2: Control
+### Layer 2: Controls
 
-Activities in the Control layer provide technology-specific, threat-informed security controls. Controls are the specific safeguards that organizations put in place to protect their information systems. They are typically informed by threats or based on best practices and industry standards.
+Activities in the Control layer produce technology-specific, threat-informed security controls. Controls are the specific guardrails that organizations put in place to protect their information systems. They are typically informed by the best practices and industry standards which are produced in Layer 1.
 
-Layer 2 Controls are typically developed by an organization for its own purposes, or for general use by industry groups, government agencies, or international standards bodies. These should be used as a starting point for Layer 3 policies.
+Layer 2 Controls are typically developed by an organization for its own purposes, or for general use by industry groups, government agencies, or international standards bodies. These should be combined with organizational risk considerations to form Layer 3 controls.
 
 The recommended process for developing Layer 2 Controls is to first assess the technology's capabilities, then identify threats to those capabilities, and finally develop controls to mitigate those threats.
 
@@ -51,13 +51,13 @@ The schema allows controls to be mapped to threats or Layer 1 controls by their 
 
 Activities in the Policy layer provide risk-informed governance rules tailored to an organization. Policies are the rules that organizations put in place to govern their information systems. They are typically informed by risks or based on best practices and industry standards.
 
-Layer 3 Policies are typically developed by an organization for its own purposes. Policies cannot be properly developed without consideration for organization-specific risk appetite and risk-acceptance. These should be used as a starting point for Layer 4 assessments.
+Layer 3 controls are typically developed by an organization for its own purposes, to compile into organizational policies. Policies cannot be properly developed without consideration for organization-specific risk appetite and risk-acceptance. These should be used as a starting point for Layer 4 assessments.
 
-### Layer 4: Assessment
+### Layer 4: Evaluation
 
-Activities in the Assessment layer provide inspection of code, configurations, and deployments. 
+Activities in the Evaluation layer provide inspection of code, configurations, and deployments. 
 
-Assessments may be built based on Layer 2 controls and/or Layer 3 Policies. While automated assessments are often developed by vendors or industry groups, proper assessments should be able to ingest organizational policies to custom-tailor the assessment to the needs of the compliance program.
+Evaluation activities may be built based on outputs from Layers 2 or 3. While automated assessments are often developed by vendors or industry groups, proper evaluation should also be able to ingest organizational policies to custom-tailor the assessment to the needs of the compliance program.
 
 ### Layer 5: Enforcement
 
