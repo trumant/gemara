@@ -16,18 +16,18 @@ Each layer in the model builds upon the lower layer, though in higher-level use 
 
 | Layer | Name | Description |
 |-------|------|-------------|
-| 1 | Framework | High-level guidance on cybersecurity measures |
+| 1 | Rules | High-level guidance on cybersecurity measures |
 | 2 | Controls | Technology-specific, threat-informed security controls |
 | 3 | Policy | Risk-informed governance rules tailored to an organization |
 | 4 | Evaluation | Inspection of code, configurations, and deployments |
 | 5 | Enforcement | Prevention or remediation based on assessment findings |
 | 6 | Audit | Monitoring, logging, and reporting on deployed resource state |
 
-### Layer 1: Framework
+### Layer 1: Rules
 
-The Framework layer is the lowest level of the SCI Model. Activities in this layer provide high-level guidance on cybersecurity measures. Frameworks are typically developed by industry groups, government agencies, or international standards bodies. They are intended to be used as a starting point for organizations to develop their own cybersecurity programs.
+The Rules layer is the lowest level of the SCI Model. Activities in this layer provide high-level guidance on cybersecurity measures. Rules are typically developed by industry groups, government agencies, or international standards bodies. They are intended to be used as a starting point for organizations to develop their own cybersecurity programs.
 
-Frameworks may express their guidance in the form of Layer 1 Controls, which are not to be confused with Layer 2 Controls. Layer 1 Controls are high-level, abstract controls that should be referenced by technology-specific Layer 2 Controls.
+Rules frameworks or standards occasionally express their guidance using the term "controls" — these should be understood as Layer 1 Controls in the event that the term appears to conflict with Layer 2. Rules are high-level, abstract controls that should be referenced by technology-specific Layer 2 Controls.
 
 Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GDPR, and CRA — among others.
 
