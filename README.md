@@ -19,7 +19,7 @@ Each layer in the model builds upon the lower layer, though in higher-level use 
 | 1 | Framework | High-level guidance on cybersecurity measures |
 | 2 | Controls | Technology-specific, threat-informed security controls |
 | 3 | Policy | Risk-informed governance rules tailored to an organization |
-| 4 | Assessment | Inspection of code, configurations, and deployments |
+| 4 | Evaluation | Inspection of code, configurations, and deployments |
 | 5 | Enforcement | Prevention or remediation based on assessment findings |
 | 6 | Audit | Monitoring, logging, and reporting on deployed resource state |
 
