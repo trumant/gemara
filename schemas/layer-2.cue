@@ -2,7 +2,7 @@
 
 metadata?: #Metadata
 
-controls?: [...#Control]
+controlFamilies?: [...#ControlFamily]
 threats?: [...#Threat]
 capabilities?: [...#Capability]
 
@@ -10,7 +10,7 @@ capabilities?: [...#Capability]
 "shared-threats"?: [...#Threat]
 "shared-capabilities"?: [...#Capability]
 
-"mapping-references"?: [...#MappingReference]
+"ruleset-mappings"?: [...#MappingReference]
 
 // Resuable types //
 
@@ -22,12 +22,17 @@ capabilities?: [...#Capability]
     "last-modified"?: string
 }
 
+#ControlFamily: {
+    title: string
+    description: string
+    controls: [...#Control]
+}
+
 #Control: {
     id: string
     title: string
     objective: string
-    family: string
-    "assessment-requirements": [...#Requirement]
+    requirements: [...#Requirement]
 
     mappings?: [...#Mapping]
 }
