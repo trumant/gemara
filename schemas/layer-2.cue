@@ -29,7 +29,6 @@ capabilities?: [...#Capability]
     family: string
     "assessment-requirements": [...#Requirement]
 
-    category?: string
     mappings?: [...#Mapping]
 }
 
@@ -39,7 +38,6 @@ capabilities?: [...#Capability]
     description: string
     capabilities: [...#Mapping]
 
-    category?: string
     mappings?: [...#Mapping]
 }
 
@@ -47,8 +45,6 @@ capabilities?: [...#Capability]
     id: string
     title: string
     description: string
-
-    category?: string
 }
 
 #MappingReference: {
