@@ -33,7 +33,8 @@ type Control struct {
 	Requirements []Requirement `yaml:"requirements"`
 
 	// optional
-	Mappings []Mapping `yaml:"mappings"`
+	ThreatMappings []Mapping `yaml:"threat-mappings"`
+	RuleMappings   []Mapping `yaml:"rule-mappings"`
 }
 
 type Threat struct {

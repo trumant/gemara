@@ -34,7 +34,8 @@ capabilities?: [...#Capability]
     objective: string
     requirements: [...#Requirement]
 
-    mappings?: [...#Mapping]
+    "rule-mappings"?: [...#Mapping]
+    "threat-mappings"?: [...#Mapping]
 }
 
 #Threat: {
