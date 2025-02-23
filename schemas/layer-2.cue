@@ -2,7 +2,7 @@
 
 metadata?: #Metadata
 
-controlFamilies?: [...#ControlFamily]
+"control-families"?: [...#ControlFamily]
 threats?: [...#Threat]
 capabilities?: [...#Capability]
 
