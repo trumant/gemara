@@ -1,0 +1,528 @@
+metadata:
+  id: OSPS-B
+  title: Open Source Project Security Baseline
+  description: |
+    The Open Source Project Security (OSPS) Baseline is a set of security
+    criteria that projects should meet to demonstrate a strong security posture.
+  applicability-categories:
+    - id: Maturity1
+      title: Maturity Level 1
+      description: |
+        Any code or non-code project with any number of maintainers or users
+    - id: Maturity2
+      title: Maturity Level 2
+      description: |
+        Any code project that has at least 2 maintainers and a small number of
+        consistent users
+    - id: Maturity3
+      title: Maturity Level 3
+      description: |
+        Any code project that has a large number of consistent users
+  mapping-references:
+    - id: BPB
+      title: OpenSSF Best Practices Badge
+      version: "2024"
+      url: https://github.com/coreinfrastructure/best-practices-badge/blob/main/controls/controls.yml
+    - id: CSF
+      title: NIST Cybersecurity Framework
+      version: "2.0"
+      url: https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf
+    - id: CRA
+      title: Cyber Resilience Act
+      version: 20.11.2024
+      url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202402847#tit_1
+    - id: SSDF
+      title: Software Security Development Framework
+      version: "1.1"
+      url: https://csrc.nist.gov/pubs/sp/800/218/final
+    - id: OC
+      title: ISO/IEC 18974
+      version: 1.0 - 2023-12
+      url: https://openchainproject.org/security-assurance
+    - id: OCRE
+      title: Open Cybersecurity Reference Architecture
+      version: "2024"
+      url: https://github.com/OWASP/OpenCRE
+    - id: SLSA
+      title: Supply Chain Levels for Software Artifacts
+      version: "1.0"
+      url: https://github.com/slsa-framework/slsa
+
+control-families:
+  - title: Access Control
+    description: |
+      Access Control focuses on the mechanisms and
+      policies that control access to the project's version
+      control system and CI/CD pipelines. These controls help
+      ensure that only authorized users can access sensitive
+      data, modify repository settings, or execute build and
+      release processes.
+    controls:
+      - id: OSPS-AC-01
+        title: |
+          The project's version control system MUST require multi-factor
+          authentication for collaborators modifying the project repository
+          settings or accessing sensitive data.
+        objective: |
+          Reduce the risk of account compromise or insider threats by requiring
+          multi-factor authentication for collaborators modifying the project
+          repository settings or accessing sensitive data.
+        rule-mappings:
+          - reference-id: BPB
+            identifiers:
+              - CC-G-1
+          - reference-id: CRA
+            identifiers:
+              - 1.2d
+              - 1.2e
+              - 1.2f
+          - reference-id: SSDF
+            identifiers:
+              - PO3.2
+              - PS1
+          - reference-id: CSF
+            identifiers:
+              - PR.A-02
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+              - 347-352
+              - 333-858
+              - 152-725
+              - 201-246
+        requirements:
+          - id: OSPS-AC-01.01
+            text: |
+              When a user attempts to access a sensitive resource in the project's
+              version control system, the system MUST require the user to complete
+              a multi-factor authentication process.
+            applicability:
+              - M1
+              - M2
+              - M3
+            recommendation: |
+              Enforce multi-factor authentication for the project's version
+              control system, requiring collaborators to provide a second form of
+              authentication when accessing sensitive data or modifying repository
+              settings. Passkeys are acceptable for this control.
+
+      - id: OSPS-AC-02
+        title: |
+          The project's version control system MUST restrict collaborator
+          permissions to the lowest available privileges by default.
+        objective: |
+          Reduce the risk of unauthorized access to the project's repository by
+          limiting the permissions granted to new collaborators.
+        rule-mappings:
+          - reference-id: CRA
+            identifiers:
+              - 1.2f
+          - reference-id: SSDF
+            identifiers:
+              - PO3.2
+              - PS1
+          - reference-id: CSF
+            identifiers:
+              - PR:AA-02
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+              - 802-056
+              - 368-633
+              - 152-725
+        requirements:
+          - id: OSPS-AC-02.01
+            text: |
+              When a new collaborator is added, the version control system MUST
+              require manual permission assignment, or restrict the collaborator
+              permissions to the lowest available privileges by default.
+            applicability:
+              - M1
+              - M2
+              - M3
+            recommendation: |
+              Most public version control systems are configured in this manner.
+              Ensure the project's version control system always assigns the lowest
+              available permissions to collaborators by default when added, granting
+              additional permissions only when necessary.
+
+      - id: OSPS-AC-03
+        title: |
+          The project's version control system MUST prevent unintentional
+          modification of the primary branch.
+        objective: |
+          Reduce the risk of accidental changes or deletion of the primary branch
+          of the project's repository by preventing unintentional modification.
+        rule-mappings:
+          - reference-id: CRA
+            identifiers:
+              - 1.2f
+          - reference-id: SSDF
+            identifiers:
+              - PO3.2
+              - PS1
+          - reference-id: CSF
+            identifiers:
+              - PR.A-02
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+              - 123-124
+              - 152-725
+        requirements:
+          - id: OSPS-AC-03.01
+            text: |
+              When a direct commit is attempted on the project's primary branch,
+              an enforcement mechanism MUST prevent the change from being applied.
+            applicability:
+              - M1
+              - M2
+              - M3
+            recommendation: |
+              If the VCS is centralized, set branch protection on the primary branch
+              in the project's VCS. Alternatively, use a decentralized approach,
+              like the Linux kernel's, where changes are first proposed in another
+              repository, and merging changes into the primary repository requires a
+              specific separate act.
+          - id: OSPS-AC-03.02
+            text: |
+              When an attempt is made to delete the project's primary branch,
+              the version control system MUST treat this as a sensitive activity
+              and require explicit confirmation of intent.
+            applicability:
+              - M1
+              - M2
+              - M3
+            recommendation: |
+              Set branch protection on the primary branch in the project's version
+              control system to prevent deletion.
+
+      - id: OSPS-AC-04
+        title: |
+          The project's permissions in CI/CD pipelines MUST follow the principle
+          of least privilege.
+        objective: |
+          Reduce the risk of unauthorized access to the project's build and release
+          processes by limiting the permissions granted to steps within the CI/CD
+          pipelines.
+        rule-mappings:
+          - reference-id: CRA
+            identifiers:
+              - 1.2d
+              - 1.2e
+              - 1.2f
+          - reference-id: SSDF
+            identifiers:
+              - PO2
+              - PO3.2
+              - PS1
+          - reference-id: CSF
+            identifiers:
+              - PR.AA-02
+              - PR.AA-05
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+              - 347-507
+              - 263-284
+              - 123-124
+        requirements:
+          - id: OSPS-AC-04.01
+            text: |
+              When a CI/CD task is executed with no permissions specified, the
+              project's version control system MUST default to the lowest available
+              permissions for all activities in the pipeline.
+            applicability:
+              - M2
+              - M3
+            recommendation: |
+              Configure the project's settings to assign the lowest available
+              permissions to new pipelines by default, granting additional
+              permissions only when necessary for specific tasks.
+          - id: OSPS-AC-04.02
+            text: |
+              When a job is assigned permissions in a CI/CD pipeline, the source
+              code or configuration MUST only assign the minimum privileges
+              necessary for the corresponding activity.
+            applicability:
+              - M3
+            recommendation: |
+              Configure the project's CI/CD pipelines to assign the lowest available
+              permissions to users and services by default, elevating permissions
+              only when necessary for specific tasks. In some version control
+              systems, this may be possible at the organizational or repository
+              level. If not, set permissions at the top level of the pipeline.
+  - title: Build and Release
+    description: |
+      Build and Release focuses on the processes and
+      tools used to compile, package, and distribute the
+      project's software. These controls help ensure that the
+      project's build and release pipelines are secure,
+      consistent, and reliable, reducing the risk of
+      vulnerabilities or errors in the software distribution
+      process.
+    controls:
+      - id: OSPS-BR-01
+        title: |
+          The project's build and release pipelines MUST NOT permit untrusted
+          input that allows access to privileged resources.
+        objective: |
+          Reduce the risk of code injection or other security vulnerabilities in the
+          project's build and release pipelines by preventing untrusted input from
+          accessing privileged resources.
+        rule-mappings:
+          - reference-id: CRA
+            identifiers:
+              - 1.2f
+          - reference-id: SSDF
+            identifiers:
+              - PO3.2
+              - PS1
+          - reference-id: CSF
+            identifiers:
+              - PR.AA-02
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+              - 357-352
+        requirements:
+          - id: OSPS-BR-01.01
+            text: |
+              When a CI/CD pipeline accepts an input parameter, that parameter MUST
+              be sanitized and validated prior to use in the pipeline.
+            applicability:
+              - M1
+              - M2
+              - M3
+            recommendation: TODO
+          - id: OSPS-BR-01.02
+            text: |
+              When a CI/CD pipeline uses a branch title in its functionality, that
+              title value MUST be sanitized and validated prior to use in the
+              pipeline.
+            applicability: []
+            recommendation: TODO
+
+      - id: OSPS-BR-02
+        title: |
+          All releases and released software assets MUST be assigned a unique
+          version identifier for each release intended to be used by users.
+        objective: |
+          Ensure that each software asset produced by the project is uniquely
+          identified, enabling users to track changes and updates to the project
+          over time.
+        rule-mappings:
+          - reference-id: BPB
+            identifiers:
+              - CC-B-5
+              - CC-B-6
+              - CC-B-7
+          - reference-id: CRA
+            identifiers:
+              - 1.2f
+          - reference-id: SSDF
+            identifiers:
+              - PO3.2
+              - PS1
+              - PS2
+              - PS3
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+        requirements:
+          - id: OSPS-BR-02.01
+            text: |
+              When an official release is created, that release MUST be assigned a
+              unique version identifier.
+            applicability:
+              - M2
+              - M3
+            recommendation: |
+              Assign a unique version identifier to each release produced by the
+              project, following a consistent naming convention or numbering scheme.
+              Examples include SemVer, CalVer, or git commit id.
+          - id: OSPS-BR-02.01
+            text: |
+              When an official release is created, all assets within that release
+              MUST be clearly associated with the release identifier or another
+              unique identifier for the asset.
+            applicability:
+              - M3
+            recommendation: |
+              Assign a unique version identifier to each software asset produced by
+              the project, following a consistent naming convention or numbering
+              scheme. Examples include SemVer, CalVer, or git commit id.
+
+      - id: OSPS-BR-03
+        title: |
+          All official project URIs MUST be delivered using encrypted channels.
+        objective: |
+          Protect the confidentiality and integrity of project source code during
+          development, reducing the risk of eavesdropping or data tampering.
+        rule-mappings:
+          - reference-id: BPB
+            identifiers:
+              - B-B-11
+          - reference-id: CRA
+            identifiers:
+              - 1.2d
+              - 1.2e
+              - 1.2f
+              - 1.2i
+              - 1.2j
+              - 1.2k
+          - reference-id: SSDF
+            identifiers:
+              - PO3.2
+              - PS1
+          - reference-id: OCRE
+            identifiers:
+              - 483-813
+              - 124-564
+              - 263-184
+        requirements:
+          - id: OSPS-BR-03.01
+            text: |
+              When the project lists a URI as an official project channel, that URI
+              MUST be exclusively delivered using encrypted channels.
+            applicability:
+              - M1
+              - M2
+              - M3
+            recommendation: |
+              Configure the project's websites and version control systems to use
+              encrypted channels such as SSH or HTTPS for data transmission.
+              Ensure all tools and domains referenced in project documentation can
+              only be accessed via encrypted channels.
+          - id: OSPS-BR-03.02
+            text: |
+              When the project lists a URI as an official distribution channel,
+              that URI MUST be exclusively delivered using encrypted channels.
+            applicability: []
+            recommendation: |
+              Configure the project's release pipeline to only fetch data from
+              websites, API responses, and other services which use encrypted
+              channels such as SSH or HTTPS for data transmission.
+
+      - id: OSPS-BR-04
+        title: |
+          All releases MUST provide a descriptive log of functional and security
+          modifications.
+        objective: |
+          Provide transparency and accountability for changes made to the project's
+          software releases, enabling users to understand the modifications and
+          improvements included in each release.
+        rule-mappings:
+          - reference-id: BPB
+            identifiers:
+              - CC-B-8
+              - CC-B-9
+          - reference-id: CRA
+            identifiers:
+              - 1.2l
+              - "2.2"
+          - reference-id: SSDF
+            identifiers:
+              - PS1
+              - PS2
+              - PS3
+              - PW1.2
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+              - 745-356
+        requirements:
+          - id: OSPS-BR-04.01
+            text: |
+              When an official release is created, that release MUST contain
+              a descriptive log of functional and security
+              modifications.
+            applicability:
+              - M2
+              - M3
+            recommendation: |
+              Ensure that all releases include a descriptive change log. It is
+              recommended to ensure that the change log is human-readable and
+              includes details beyond commit messages, such as descriptions of the
+              security impact or relevance to different use cases. To ensure
+              machine readability, place the content under a markdown header
+              such as "## Changelog".
+
+      - id: OSPS-BR-05
+        title: |
+          All build and release pipelines MUST use standardized tooling where
+          available to ingest dependencies at build time.
+        objective: |
+          Ensure that the project's build and release pipelines use standardized tools
+          and processes to manage dependencies, reducing the risk of compatibility
+          issues or security vulnerabilities in the software.
+        rule-mappings:
+          - reference-id: BPB
+            identifiers:
+              - Q-B-2
+          - reference-id: CRA
+            identifiers:
+              - 1.2b
+              - 1.2d
+              - 1.2f
+              - 1.2h
+              - 1.2j
+              - "2.1"
+          - reference-id: SSDF
+            identifiers:
+              - PO3.2
+              - PS1
+          - reference-id: OCRE
+            identifiers:
+              - 486-813
+              - 124-564
+              - 347-352
+              - 715-334
+        requirements:
+          - id: OSPS-BR-05.01
+            text: |
+              When a build and release pipeline ingests dependencies, it MUST
+              use standardized tooling where available.
+            applicability:
+              - M2
+              - M3
+            recommendation: |
+              Use a common tooling for your ecosystem, such as package managers or
+              dependency management tools to ingest dependencies at build time. This
+              may include using a dependency file, lock file, or manifest to specify
+              the required dependencies, which are then pulled in by the build
+              system.
+
+      - id: OSPS-BR-06
+        title: |
+          Produce all released software assets with signatures and hashes.
+        objective: |
+          All released software assets MUST be signed or accounted for in a
+          signed manifest including each asset's cryptographic hashes.
+        rule-mappings:
+          - reference-id: SSDF
+            identifiers:
+              - PO5.2
+              - PS2.1
+              - PW6.2
+        requirements:
+          - id: OSPS-BR-06.01
+            text: |
+              When an official release is created, that release MUST be signed or
+              accounted for in a signed manifest including each asset's
+              cryptographic hashes.
+            applicability:
+              - M2
+              - M3
+            recommendation: |
+              Sign all released software assets at build time with a cryptographic
+              signature or attestations, such as GPG or PGP signature, Sigstore
+              signatures, SLSA provenance, or SLSA VSAs. Include the cryptographic
+              hashes of each asset in a signed manifest or metadata file.

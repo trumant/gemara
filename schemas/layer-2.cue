@@ -7,10 +7,8 @@ threats?: [...#Threat]
 capabilities?: [...#Capability]
 
 "shared-controls"?: [...#Mapping]
-"shared-threats"?: [...#Threat]
-"shared-capabilities"?: [...#Capability]
-
-"ruleset-mappings"?: [...#MappingReference]
+"shared-threats"?: [...#Mapping]
+"shared-capabilities"?: [...#Mapping]
 
 // Resuable types //
 
@@ -20,6 +18,14 @@ capabilities?: [...#Capability]
     description: string
     version?: string
     "last-modified"?: string
+    "applicability-categories"?: [...#Category]
+    "mapping-references"?: [...#MappingReference]
+}
+
+#Category: {
+    id: string
+    title: string
+    description: string
 }
 
 #ControlFamily: {
@@ -44,7 +50,7 @@ capabilities?: [...#Capability]
     description: string
     capabilities: [...#Mapping]
 
-    mappings?: [...#Mapping]
+    "external-mappings"?: [...#Mapping]
 }
 
 #Capability: {
@@ -57,6 +63,7 @@ capabilities?: [...#Capability]
     id: string
     title: string
     version: string
+    description?: string
     url?: =~"^https?://[^\\s]+$"
 }
 

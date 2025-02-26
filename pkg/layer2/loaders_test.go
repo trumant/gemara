@@ -32,8 +32,13 @@ var tests = []struct {
 		wantErr:    true,
 	},
 	{
-		name:       "Good YAML",
-		sourcePath: "./test-data/good.yaml",
+		name:       "Good YAML — CCC",
+		sourcePath: "./test-data/good-ccc.yaml",
+		wantErr:    false,
+	},
+	{
+		name:       "Good YAML — OSPS",
+		sourcePath: "./test-data/good-osps.yaml",
 		wantErr:    false,
 	},
 }

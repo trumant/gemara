@@ -2,22 +2,29 @@ package layer2
 
 type Catalog struct {
 	// All are optional, as multiple may be combined into a complete Layer2 object
-	Metadata           Metadata           `yaml:"metadata"`
-	ControlFamilies    []ControlFamily    `yaml:"control-families"`
-	Threats            []Threat           `yaml:"threats"`
-	Capabilities       []Capability       `yaml:"capabilities"`
-	SharedControls     []Mapping          `yaml:"shared-controls"`
-	SharedThreats      []Threat           `yaml:"shared-threats"`
-	SharedCapabilities []Capability       `yaml:"shared-capabilities"`
-	RulesetMappings    []MappingReference `yaml:"ruleset-mappings"`
+	Metadata           Metadata        `yaml:"metadata"`
+	ControlFamilies    []ControlFamily `yaml:"control-families"`
+	Threats            []Threat        `yaml:"threats"`
+	Capabilities       []Capability    `yaml:"capabilities"`
+	SharedControls     []Mapping       `yaml:"shared-controls"`
+	SharedThreats      []Threat        `yaml:"shared-threats"`
+	SharedCapabilities []Capability    `yaml:"shared-capabilities"`
 }
 
 type Metadata struct {
-	ID           string `yaml:"id"`
-	Title        string `yaml:"title"`
-	Description  string `yaml:"description"`
-	Version      string `yaml:"version"`
-	LastModified string `yaml:"last-modified"`
+	ID                      string             `yaml:"id"`
+	Title                   string             `yaml:"title"`
+	Description             string             `yaml:"description"`
+	Version                 string             `yaml:"version"`
+	LastModified            string             `yaml:"last-modified"`
+	ApplicabilityCategories []Category         `yaml:"applicability-categories"`
+	MappingReferences       []MappingReference `yaml:"mapping-references"`
+}
+
+type Category struct {
+	ID          string `yaml:"id"`
+	Title       string `yaml:"title"`
+	Description string `yaml:"description"`
 }
 
 type ControlFamily struct {
