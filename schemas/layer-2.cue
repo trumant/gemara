@@ -1,14 +1,16 @@
 // Top level schema //
 
-metadata?: #Metadata
+catalog: {
+    metadata?: #Metadata
 
-"control-families"?: [...#ControlFamily]
-threats?: [...#Threat]
-capabilities?: [...#Capability]
+    "control-families"?: [...#ControlFamily]
+    threats?: [...#Threat]
+    capabilities?: [...#Capability]
 
-"shared-controls"?: [...#Mapping]
-"shared-threats"?: [...#Mapping]
-"shared-capabilities"?: [...#Mapping]
+    "shared-controls"?: [...#Mapping]
+    "shared-threats"?: [...#Mapping]
+    "shared-capabilities"?: [...#Mapping]
+}
 
 // Resuable types //
 
