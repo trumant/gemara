@@ -38,7 +38,7 @@ capabilities?: [...#Capability]
     id: string
     title: string
     objective: string
-    requirements: [...#Requirement]
+    "assessment-requirements": [...#AssessmentRequirement]
 
     "rule-mappings"?: [...#Mapping]
     "threat-mappings"?: [...#Mapping]
@@ -72,7 +72,7 @@ capabilities?: [...#Capability]
     identifiers: [...string]
 }
 
-#Requirement: {
+#AssessmentRequirement: {
     id: string
     text: string
     applicability: [...string]
