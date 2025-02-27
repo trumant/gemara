@@ -9,11 +9,11 @@ type RevertFunc func() error
 
 // Change is a struct that contains the data and functions associated with a single change
 type Change struct {
-	Target_Name   string       `json:"targetName"`   // TargetName is the name or ID of the resource or configuration that is to be changed
-	Target_Object *interface{} `json:"targetObject"` // TargetObject is the object that is to be changed, retained here for logging purposes
-	Applied       bool         `json:"applied"`      // Applied is true if the change was successfully applied at least once
-	Reverted      bool         `json:"reverted"`     // Reverted is true if the change was successfully reverted and not applied again
-	Error         error        `json:"error"`        // Error is used if any error occurred during the change
+	Target_Name   string       // TargetName is the name or ID of the resource or configuration that is to be changed
+	Target_Object *interface{} // TargetObject is the object that is to be changed, retained here for logging purposes
+	Applied       bool         // Applied is true if the change was successfully applied at least once
+	Reverted      bool         // Reverted is true if the change was successfully reverted and not applied again
+	Error         error        // Error is used if any error occurred during the change
 
 	applyFunc  ApplyFunc  // applyFunc is the function that will be executed to make the change
 	revertFunc RevertFunc // revertFunc is the function that will be executed to undo the change

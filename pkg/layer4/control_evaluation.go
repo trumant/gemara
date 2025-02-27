@@ -17,8 +17,8 @@ type ControlEvaluation struct {
 	Passed          bool                        // Passed is true if all testSets in the testSuite passed
 	Message         string                      // Message is the human-readable result of the final assessment to run in this evaluation
 	Corrupted_State bool                        // BadState is true if any testSet failed to revert at the end of the testSuite
-	User_Guide      string                      // UserGuide is the URL to the documentation for this evaluation
-	Results         map[string]AssessmentResult // ControlEvaluations is a map of testSet names to their results
+	User_Guide      string                      // User_Guide is the URL to the documentation for this evaluation
+	Results         map[string]AssessmentResult // Control_Evaluations is a map of testSet names to their results
 }
 
 // ExecuteTest is a helper function to run a test function and update the result
