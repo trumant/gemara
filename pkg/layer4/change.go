@@ -9,11 +9,11 @@ type RevertFunc func() error
 
 // Change is a struct that contains the data and functions associated with a single change
 type Change struct {
-	TargetName   string       `json:"targetName"`   // TargetName is the name or ID of the resource or configuration that is to be changed
-	TargetObject *interface{} `json:"targetObject"` // TargetObject is the object that is to be changed, retained here for logging purposes
-	Applied      bool         `json:"applied"`      // Applied is true if the change was successfully applied at least once
-	Reverted     bool         `json:"reverted"`     // Reverted is true if the change was successfully reverted and not applied again
-	Error        error        `json:"error"`        // Error is used if any error occurred during the change
+	Target_Name   string       `json:"targetName"`   // TargetName is the name or ID of the resource or configuration that is to be changed
+	Target_Object *interface{} `json:"targetObject"` // TargetObject is the object that is to be changed, retained here for logging purposes
+	Applied       bool         `json:"applied"`      // Applied is true if the change was successfully applied at least once
+	Reverted      bool         `json:"reverted"`     // Reverted is true if the change was successfully reverted and not applied again
+	Error         error        `json:"error"`        // Error is used if any error occurred during the change
 
 	applyFunc  ApplyFunc  // applyFunc is the function that will be executed to make the change
 	revertFunc RevertFunc // revertFunc is the function that will be executed to undo the change
@@ -22,10 +22,10 @@ type Change struct {
 // NewChange creates a new Change struct with the provided data
 func NewChange(targetName string, targetObject *interface{}, applyFunc ApplyFunc, revertFunc RevertFunc) *Change {
 	return &Change{
-		TargetName:   targetName,
-		TargetObject: targetObject,
-		applyFunc:    applyFunc,
-		revertFunc:   revertFunc,
+		Target_Name:   targetName,
+		Target_Object: targetObject,
+		applyFunc:     applyFunc,
+		revertFunc:    revertFunc,
 	}
 }
 
@@ -46,7 +46,7 @@ func (c *Change) Apply() {
 		return
 	}
 	if obj != nil {
-		c.TargetObject = obj
+		c.Target_Object = obj
 	}
 	c.Applied = true
 	c.Reverted = false

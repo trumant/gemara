@@ -12,13 +12,13 @@ import (
 
 // ControlEvaluation is a struct that contains all assessment results, organinzed by name
 type ControlEvaluation struct {
-	Name          string                      // TestSuiteName is the human-readable name or description of the control evaluation
-	ControlID     string                      // ControlID is the unique identifier for the control being evaluated
-	Passed        bool                        // Passed is true if all testSets in the testSuite passed
-	Message       string                      // Message is the human-readable result of the final assessment to run in this evaluation
-	BadStateAlert bool                        // BadState is true if any testSet failed to revert at the end of the testSuite
-	Results       map[string]AssessmentResult // TestSetResults is a map of testSet names to their results
-	UserGuide     string                      // UserGuide is the URL to the documentation for this evaluation
+	Name            string                      // TestSuiteName is the human-readable name or description of the control evaluation
+	Control_Id      string                      // Control_Id is the unique identifier for the control being evaluated
+	Passed          bool                        // Passed is true if all testSets in the testSuite passed
+	Message         string                      // Message is the human-readable result of the final assessment to run in this evaluation
+	Corrupted_State bool                        // BadState is true if any testSet failed to revert at the end of the testSuite
+	User_Guide      string                      // UserGuide is the URL to the documentation for this evaluation
+	Results         map[string]AssessmentResult // ControlEvaluations is a map of testSet names to their results
 }
 
 // ExecuteTest is a helper function to run a test function and update the result
@@ -42,7 +42,7 @@ func (c *ControlEvaluation) Cleanup() {
 	for _, result := range c.Results {
 		badState := result.RevertChanges()
 		if badState {
-			c.BadStateAlert = true
+			c.Corrupted_State = true
 		}
 	}
 }

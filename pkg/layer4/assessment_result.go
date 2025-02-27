@@ -28,6 +28,17 @@ func (t *AssessmentResult) SetReview(message string, value interface{}) {
 	t.Value = value
 }
 
+func (t *AssessmentResult) NewChange(changeName string, targetName string, targetObject *interface{}, applyFunc ApplyFunc, revertFunc RevertFunc) *Change {
+	t.Changes[changeName] = &Change{
+		Target_Name:   targetName,
+		Target_Object: targetObject,
+		applyFunc:     applyFunc,
+		revertFunc:    revertFunc,
+	}
+
+	return t.Changes[changeName]
+}
+
 func (t *AssessmentResult) RevertChanges() (badStateAlert bool) {
 	for _, change := range t.Changes {
 		if !badStateAlert && (change.Applied || change.Error != nil) {
