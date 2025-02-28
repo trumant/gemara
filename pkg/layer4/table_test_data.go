@@ -1,5 +1,7 @@
 package layer4
 
+// This file is for reusable test data to help seed ideas and reduce duplication.
+
 import "errors"
 
 var (
@@ -10,6 +12,12 @@ var (
 	}
 	goodRevertFunc = func() error {
 		return nil
+	}
+	badApplyFunc = func() (*interface{}, error) {
+		return nil, errors.New("error")
+	}
+	badRevertFunc = func() error {
+		return errors.New("error")
 	}
 
 	// Assessment Results
@@ -42,19 +50,23 @@ var (
 		revertFunc: goodRevertFunc,
 		Applied:    true,
 	}
+	badApplyChange = &Change{
+		applyFunc:  badApplyFunc,
+		revertFunc: goodRevertFunc,
+	}
 	badRevertChange = &Change{
-		applyFunc: goodApplyFunc,
-		revertFunc: func() error {
-			return errors.New("error")
-		},
+		applyFunc:  goodApplyFunc,
+		revertFunc: badRevertFunc,
 	}
 	goodRevertedChange = &Change{
-		applyFunc: goodApplyFunc,
-		Reverted:  true,
+		applyFunc:  goodApplyFunc,
+		revertFunc: goodRevertFunc,
+		Reverted:   true,
 	}
 	goodNotRevertedChange = &Change{
-		applyFunc: goodApplyFunc,
-		Applied:   true,
+		applyFunc:  goodApplyFunc,
+		revertFunc: goodRevertFunc,
+		Applied:    true,
 	}
 	noApplyChange = &Change{
 		revertFunc: goodRevertFunc,
@@ -64,20 +76,37 @@ var (
 	}
 
 	// Assessments
+	failingAssessment = Assessment{
+		Steps: []AssessmentStep{
+			failingAssessmentStep,
+			passingAssessmentStep,
+		},
+	}
 	passingAssessment = Assessment{
 		Changes: map[string]*Change{
 			"pendingChange":         pendingChange,
 			"appliedRevertedChange": appliedRevertedChange,
 		},
-		Steps: []AssessmentStep{passingAssessmentStep},
+		Steps: []AssessmentStep{
+			passingAssessmentStep,
+		},
 	}
-	failingAssessment = Assessment{
-		Steps: []AssessmentStep{failingAssessmentStep},
+	needsReviewAssessment = Assessment{
+		Steps: []AssessmentStep{
+			passingAssessmentStep,
+			needsReviewAssessmentStep,
+			passingAssessmentStep,
+		},
 	}
 	badRevertPassingAssessment = Assessment{
-		Steps: []AssessmentStep{passingAssessmentStep},
 		Changes: map[string]*Change{
-			"pendingChange": badRevertChange,
+			"badRevertChange": badRevertChange,
+		},
+		Steps: []AssessmentStep{
+			passingAssessmentStep,
+			passingAssessmentStep,
+			passingAssessmentStep,
+			passingAssessmentStep,
 		},
 	}
 )

@@ -7,6 +7,7 @@ type Assessment struct {
 	Result         Result             // Passed is true if the test passed
 	Message        string             // Message is the human-readable result of the test
 	Steps          []AssessmentStep   // Steps is a slice of steps that were executed during the test
+	StepsExecuted  int                // StepsExecuted is the number of steps that were executed during the test
 	Value          interface{}        // Value is the object that was returned during the test
 	Changes        map[string]*Change // Changes is a slice of changes that were made during the test
 }
@@ -21,12 +22,9 @@ func (t *Assessment) NewStep(step AssessmentStep) {
 }
 
 func (a *Assessment) runStep(targetData interface{}, step AssessmentStep) Result {
+	a.StepsExecuted++
 	result, message := step(targetData, a)
-	if a.Result != Failed {
-		a.Result = result // Don't overwrite the Assessment result if it Failed and continued
-	} else if a.Result == Unknown {
-		a.Result = Failed
-	}
+	a.Result = checkResultOverride(a.Result, result)
 	a.Message = message
 	return result
 }
@@ -52,6 +50,9 @@ func (a *Assessment) RunTolerateFailures(targetData interface{}) Result {
 
 // NewChange creates a new Change object and adds it to the Assessment
 func (t *Assessment) NewChange(changeName string, targetName string, targetObject *interface{}, applyFunc ApplyFunc, revertFunc RevertFunc) *Change {
+	if t.Changes == nil {
+		t.Changes = make(map[string]*Change)
+	}
 	t.Changes[changeName] = &Change{
 		Target_Name:   targetName,
 		Target_Object: targetObject,

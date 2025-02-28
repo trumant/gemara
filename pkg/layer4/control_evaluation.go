@@ -23,8 +23,8 @@ type ControlEvaluation struct {
 func (c *ControlEvaluation) Evaluate(targetData interface{}) {
 	for _, assessment := range c.Assessments {
 		result := assessment.Run(targetData)
-		breakLoop := c.triageResult(result)
-		if breakLoop {
+		c.Result = checkResultOverride(c.Result, result)
+		if c.Result == Failed {
 			break
 		}
 	}
@@ -35,29 +35,8 @@ func (c *ControlEvaluation) Evaluate(targetData interface{}) {
 func (c *ControlEvaluation) TolerantEvaluate(targetData interface{}) {
 	for _, assessment := range c.Assessments {
 		result := assessment.RunTolerateFailures(targetData)
-		c.triageResult(result)
+		c.Result = checkResultOverride(c.Result, result)
 	}
-}
-
-// triageResult makes sure the loop
-func (c *ControlEvaluation) triageResult(result Result) (breakLoop bool) {
-	if c.Result == Failed {
-		// Failed should overwrite anything and immediately stop execution.
-		c.Result = Failed
-		return true
-	}
-
-	if c.Result == Unknown {
-		// If the current result is Unknown, it should not be overwritten by NeedsReview or Passed.
-		return
-	}
-	if c.Result == NeedsReview && result == Passed {
-		// If the current result is NeedsReview, it should not be overwritten by Passed.
-		return
-	}
-	// Otherwise, update the result
-	c.Result = result
-	return
 }
 
 func (c *ControlEvaluation) Cleanup() {
