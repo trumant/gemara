@@ -2,124 +2,38 @@ package layer4
 
 import "testing"
 
-var applyFunc = func() (*interface{}, error) {
-	return nil, nil
-}
-var revertFunc = func() error {
-	return nil
-}
-var changes = []struct {
+var changesTestData = []struct {
 	testName string
 	change   *Change
 }{
 	{
 		testName: "Change not yet applied",
-		change: &Change{
-			applyFunc:  applyFunc,
-			revertFunc: revertFunc,
-			Applied:    false,
-			Reverted:   false,
-		},
+		change:   pendingChange,
 	},
 	{
 		testName: "Change already applied and not yet reverted",
-		change: &Change{
-			applyFunc:  applyFunc,
-			revertFunc: revertFunc,
-			Applied:    true,
-			Reverted:   false,
-		},
+		change:   appliedNotRevertedChange,
 	},
 	{
 		testName: "Change already applied and reverted",
-		change: &Change{
-			applyFunc:  applyFunc,
-			revertFunc: revertFunc,
-			Applied:    true,
-			Reverted:   true,
-		},
+		change:   appliedRevertedChange,
 	},
 	{
-		testName: "No revert function specified (1)",
-		change: &Change{
-			applyFunc: applyFunc,
-			Applied:   false,
-			Reverted:  false,
-		},
+		testName: "No revert function specified",
+		change:   noRevertChange,
 	},
 	{
-		testName: "No revert function specified (2)",
-		change: &Change{
-			applyFunc: applyFunc,
-			Applied:   false,
-			Reverted:  true,
-		},
-	},
-	{
-		testName: "No revert function specified (3)",
-		change: &Change{
-			applyFunc: applyFunc,
-			Applied:   true,
-			Reverted:  false,
-		},
-	},
-	{
-		testName: "No revert function specified (4)",
-		change: &Change{
-			applyFunc: applyFunc,
-			Applied:   true,
-			Reverted:  true,
-		},
-	},
-	{
-		testName: "No apply function specified (1)",
-		change: &Change{
-			revertFunc: revertFunc,
-			Applied:    false,
-			Reverted:   false,
-		},
-	},
-	{
-		testName: "No apply function specified (2)",
-		change: &Change{
-			revertFunc: revertFunc,
-			Applied:    true,
-			Reverted:   false,
-		},
-	},
-	{
-		testName: "No apply function specified (3)",
-		change: &Change{
-			revertFunc: revertFunc,
-			Applied:    true,
-			Reverted:   true,
-		},
+		testName: "No apply function specified",
+		change:   noApplyChange,
 	},
 	{
 		testName: "Neither function specified (1)",
-		change: &Change{
-			Applied:  false,
-			Reverted: false,
-		},
-	},
-	{
-		testName: "Neither function specified (2)",
-		change: &Change{
-			Applied:  true,
-			Reverted: false,
-		},
-	},
-	{
-		testName: "Neither function specified (3)",
-		change: &Change{
-			Applied:  true,
-			Reverted: true,
-		},
+		change:   &Change{},
 	},
 }
 
 func TestApply(t *testing.T) {
-	for _, c := range changes {
+	for _, c := range changesTestData {
 		t.Run(c.testName, func(t *testing.T) {
 
 			c.change.Apply()
@@ -146,7 +60,7 @@ func TestApply(t *testing.T) {
 }
 
 func TestRevert(t *testing.T) {
-	for _, c := range changes {
+	for _, c := range changesTestData {
 		t.Run(c.testName, func(t *testing.T) {
 
 			c.change.Revert()

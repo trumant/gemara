@@ -4,60 +4,82 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"reflect"
-	"runtime"
-	"strings"
 	"syscall"
 )
 
 // ControlEvaluation is a struct that contains all assessment results, organinzed by name
 type ControlEvaluation struct {
-	Name            string                      // TestSuiteName is the human-readable name or description of the control evaluation
-	Control_Id      string                      // Control_Id is the unique identifier for the control being evaluated
-	Passed          bool                        // Passed is true if all testSets in the testSuite passed
-	Message         string                      // Message is the human-readable result of the final assessment to run in this evaluation
-	Corrupted_State bool                        // BadState is true if any testSet failed to revert at the end of the testSuite
-	User_Guide      string                      // User_Guide is the URL to the documentation for this evaluation
-	Results         map[string]AssessmentResult // Control_Evaluations is a map of testSet names to their results
+	Name            string       // TestSuiteName is the human-readable name or description of the control evaluation
+	Control_Id      string       // Control_Id is the unique identifier for the control being evaluated
+	Result          Result       // Result is true if all testSets in the testSuite passed
+	Message         string       // Message is the human-readable result of the final assessment to run in this evaluation
+	Corrupted_State bool         // BadState is true if any testSet failed to revert at the end of the testSuite
+	User_Guide      string       // User_Guide is the URL to the documentation for this evaluation
+	Assessments     []Assessment // Control_Evaluations is a map of testSet names to their results
 }
 
-// ExecuteTest is a helper function to run a test function and update the result
-func (c *ControlEvaluation) ExecuteTest(testFunc func() AssessmentResult) {
-	// get name of the provided function as a string
-	testFuncName := runtime.FuncForPC(reflect.ValueOf(testFunc).Pointer()).Name()
-	// get the last part of the name, which is the actual function name
-	testName := strings.Split(testFuncName, ".")[len(strings.Split(testFuncName, "."))-1]
-
-	testResult := testFunc()
-
-	// if this is the first test or previous tests have passed, accept any results
-	if len(c.Results) == 0 || c.Passed {
-		c.Passed = testResult.Passed
-		c.Message = testResult.Message
+// Evaluate runs each step in each assessment, updating the relevant fields on the control evaluation.
+// It will halt if a step returns a failed result.
+func (c *ControlEvaluation) Evaluate(targetData interface{}) {
+	for _, assessment := range c.Assessments {
+		result := assessment.Run(targetData)
+		breakLoop := c.triageResult(result)
+		if breakLoop {
+			break
+		}
 	}
-	c.Results[testName] = testResult
+}
+
+// TolerantEvaluate runs each step in each assessment, updating the relevant fields on the control evaluation
+// It will not halt if a step returns an failed result.
+func (c *ControlEvaluation) TolerantEvaluate(targetData interface{}) {
+	for _, assessment := range c.Assessments {
+		result := assessment.RunTolerateFailures(targetData)
+		c.triageResult(result)
+	}
+}
+
+// triageResult makes sure the loop
+func (c *ControlEvaluation) triageResult(result Result) (breakLoop bool) {
+	if c.Result == Failed {
+		// Failed should overwrite anything and immediately stop execution.
+		c.Result = Failed
+		return true
+	}
+
+	if c.Result == Unknown {
+		// If the current result is Unknown, it should not be overwritten by NeedsReview or Passed.
+		return
+	}
+	if c.Result == NeedsReview && result == Passed {
+		// If the current result is NeedsReview, it should not be overwritten by Passed.
+		return
+	}
+	// Otherwise, update the result
+	c.Result = result
+	return
 }
 
 func (c *ControlEvaluation) Cleanup() {
-	for _, result := range c.Results {
-		badState := result.RevertChanges()
-		if badState {
+	for _, assessment := range c.Assessments {
+		corrupted := assessment.RevertChanges()
+		if corrupted {
 			c.Corrupted_State = true
 		}
 	}
 }
 
 // CloseHandler creates a 'listener' on a new goroutine which will notify the
-// program if it receives an interrupt from the OS.
-// If an interrupt is received, the program will attempt to revert any changes
-// made by the terminated Plugin.
+// program if it receives an interrupt from the operating system.
+// If an interrupt is received, this will attempt to revert any changes
+// made by the terminated ControlEvaluation.
 func (c *ControlEvaluation) CloseHandler() {
 	// Ref: https://golangcode.com/handle-ctrl-c-exit-in-terminal/
 	channel := make(chan os.Signal, 1)
 	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-channel
-		log.Print("Unexpected termination. Attempting to revert changes made by terminated Plugin. Do not interrupt this process.")
+		log.Print("\n*****\nUnexpected termination. Attempting to revert changes made by the active ControlEvaluation. Do not interrupt this process.\n*****\n")
 		c.Cleanup()
 		os.Exit(0)
 	}()
