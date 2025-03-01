@@ -20,9 +20,15 @@ type ControlEvaluation struct {
 
 // Evaluate runs each step in each assessment, updating the relevant fields on the control evaluation.
 // It will halt if a step returns a failed result.
-func (c *ControlEvaluation) Evaluate(targetData interface{}) {
+// `targetData` is the data that the assessment will be run against.
+// `targetApplicability` is a slice of strings that determine when the assessment is applicable.
+func (c *ControlEvaluation) Evaluate(targetData interface{}, targetApplicability []string) {
+	if len(c.Assessments) == 0 {
+		c.Result = NeedsReview
+		return
+	}
 	for _, assessment := range c.Assessments {
-		result := assessment.Run(targetData)
+		result := assessment.Run(targetData, targetApplicability)
 		c.Result = checkResultOverride(c.Result, result)
 		if c.Result == Failed {
 			break
@@ -32,9 +38,11 @@ func (c *ControlEvaluation) Evaluate(targetData interface{}) {
 
 // TolerantEvaluate runs each step in each assessment, updating the relevant fields on the control evaluation
 // It will not halt if a step returns an failed result.
-func (c *ControlEvaluation) TolerantEvaluate(targetData interface{}) {
+// `targetData` is the data that the assessment will be run against.
+// `targetApplicability` is a slice of strings that determine when the assessment is applicable.
+func (c *ControlEvaluation) TolerantEvaluate(targetData interface{}, targetApplicability []string) {
 	for _, assessment := range c.Assessments {
-		result := assessment.RunTolerateFailures(targetData)
+		result := assessment.RunTolerateFailures(targetData, targetApplicability)
 		c.Result = checkResultOverride(c.Result, result)
 	}
 }

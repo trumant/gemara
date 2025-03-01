@@ -6,6 +6,7 @@ const (
 	Passed Result = iota
 	Failed
 	NeedsReview
+	NotApplicable
 	Unknown
 )
 
@@ -18,6 +19,8 @@ func (r Result) String() string {
 		return "Failed"
 	case NeedsReview:
 		return "Needs Review"
+	case NotApplicable:
+		return "Not Applicable"
 	default:
 		return "Unknown"
 	}

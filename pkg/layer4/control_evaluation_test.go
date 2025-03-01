@@ -11,7 +11,7 @@ var controlEvaluationTestData = []struct {
 }{
 	{
 		testName:          "ControlEvaluation with no Assessments",
-		expectedResult:    Passed,
+		expectedResult:    NeedsReview,
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
 			Assessments: []Assessment{},
@@ -22,13 +22,7 @@ var controlEvaluationTestData = []struct {
 		expectedResult:    Passed,
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
-			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						passingAssessmentStep,
-					},
-				},
-			},
+			Assessments: []Assessment{passingAssessment},
 		},
 	},
 	{
@@ -36,13 +30,7 @@ var controlEvaluationTestData = []struct {
 		expectedResult:    Failed,
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
-			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						failingAssessmentStep,
-					},
-				},
-			},
+			Assessments: []Assessment{failingAssessment},
 		},
 	},
 	{
@@ -50,13 +38,7 @@ var controlEvaluationTestData = []struct {
 		expectedResult:    NeedsReview,
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
-			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						needsReviewAssessmentStep,
-					},
-				},
-			},
+			Assessments: []Assessment{needsReviewAssessment},
 		},
 	},
 	{
@@ -64,13 +46,7 @@ var controlEvaluationTestData = []struct {
 		expectedResult:    Unknown,
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
-			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						unknownAssessmentStep,
-					},
-				},
-			},
+			Assessments: []Assessment{unknownAssessment},
 		},
 	},
 	{
@@ -79,16 +55,8 @@ var controlEvaluationTestData = []struct {
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
 			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						needsReviewAssessmentStep,
-					},
-				},
-				{
-					Steps: []AssessmentStep{
-						unknownAssessmentStep,
-					},
-				},
+				needsReviewAssessment,
+				unknownAssessment,
 			},
 		},
 	},
@@ -98,35 +66,19 @@ var controlEvaluationTestData = []struct {
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
 			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						unknownAssessmentStep,
-					},
-				},
-				{
-					Steps: []AssessmentStep{
-						needsReviewAssessmentStep,
-					},
-				},
+				unknownAssessment,
+				needsReviewAssessment,
 			},
 		},
 	},
 	{
 		testName:          "ControlEvaluation with first Failed and then NeedsReview Assessment",
-		expectedResult:    Unknown,
+		expectedResult:    Failed,
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
 			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						unknownAssessmentStep,
-					},
-				},
-				{
-					Steps: []AssessmentStep{
-						needsReviewAssessmentStep,
-					},
-				},
+				failingAssessment,
+				needsReviewAssessment,
 			},
 		},
 	},
@@ -137,16 +89,8 @@ var controlEvaluationTestData = []struct {
 		expectedCorrupted: false,
 		control: &ControlEvaluation{
 			Assessments: []Assessment{
-				{
-					Steps: []AssessmentStep{
-						failingAssessmentStep,
-					},
-				},
-				{
-					Steps: []AssessmentStep{
-						passingAssessmentStep,
-					},
-				},
+				failingAssessment,
+				passingAssessment,
 			},
 		},
 	},
@@ -157,7 +101,7 @@ func TestEvaluate(t *testing.T) {
 	for _, c := range controlEvaluationTestData {
 		t.Run(c.testName, func(t *testing.T) {
 
-			c.control.Evaluate(nil)
+			c.control.Evaluate(nil, testingApplicability)
 
 			if c.control.Result != c.expectedResult {
 				t.Errorf("Expected Result to be %v, but it was %v", c.expectedResult, c.control.Result)
@@ -170,7 +114,7 @@ func TestEvaluate(t *testing.T) {
 
 		t.Run("Tolerant"+c.testName, func(t *testing.T) {
 
-			c.control.TolerantEvaluate(nil)
+			c.control.TolerantEvaluate(nil, testingApplicability)
 
 			if c.control.Result != c.expectedResult {
 				t.Errorf("Expected Result to be %v, but it was %v", c.expectedResult, c.control.Result)

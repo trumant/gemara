@@ -1,6 +1,8 @@
 package layer4
 
-import "testing"
+import (
+	"testing"
+)
 
 var assessmentsTestData = []struct {
 	testName           string
@@ -104,8 +106,8 @@ func TestRunStep(t *testing.T) {
 func TestRun(t *testing.T) {
 	for _, data := range assessmentsTestData {
 		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.Run(nil)
-			if result != data.expectedResult {
+			result := data.assessment.Run(nil, testingApplicability)
+			if result != data.assessment.Result {
 				t.Errorf("expected match between Run return value (%s) and assessment Result value (%s)", result, data.expectedResult)
 			}
 			if data.assessment.StepsExecuted != data.numberOfStepsToRun {
@@ -117,16 +119,27 @@ func TestRun(t *testing.T) {
 
 // TestRunTolerateFailures ensures that RunTolerateFailures executes all steps, halting only if a step returns an unknown result
 func TestRunTolerateFailures(t *testing.T) {
-	for _, data := range assessmentsTestData {
+	for _, d := range assessmentsTestData {
+		data := d
 		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.RunTolerateFailures(nil)
-			if result != data.expectedResult {
+			result := data.assessment.RunTolerateFailures(nil, testingApplicability)
+			if result != data.assessment.Result {
 				t.Errorf("expected match between RunTolerateFailures return value (%s) and assessment Result value (%s)", result, data.expectedResult)
 			}
 			if data.assessment.StepsExecuted != data.numberOfSteps {
 				if result != Unknown {
 					t.Errorf("expected to run %d tests, got %d", data.numberOfSteps, data.assessment.StepsExecuted)
 				}
+			}
+		})
+		data = d
+		t.Run(data.testName+"_not-applicable", func(t *testing.T) {
+			result := data.assessment.RunTolerateFailures(nil, []string{"not a real applicability"})
+			if len(data.assessment.Steps) > 0 && result != NotApplicable {
+				t.Errorf("expected fake applicability value to return value %s but got %s", NotApplicable, result)
+			}
+			if data.assessment.StepsExecuted != 0 {
+				t.Errorf("expected no steps to be executed, got %d", data.assessment.StepsExecuted)
 			}
 		})
 	}

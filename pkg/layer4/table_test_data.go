@@ -5,6 +5,8 @@ package layer4
 import "errors"
 
 var (
+	// Generic applicability for testing
+	testingApplicability = []string{"test"}
 
 	// Functions
 	goodApplyFunc = func() (*interface{}, error) {
@@ -81,6 +83,7 @@ var (
 			failingAssessmentStep,
 			passingAssessmentStep,
 		},
+		Applicability: testingApplicability,
 	}
 	passingAssessment = Assessment{
 		Changes: map[string]*Change{
@@ -90,6 +93,7 @@ var (
 		Steps: []AssessmentStep{
 			passingAssessmentStep,
 		},
+		Applicability: testingApplicability,
 	}
 	needsReviewAssessment = Assessment{
 		Steps: []AssessmentStep{
@@ -97,6 +101,15 @@ var (
 			needsReviewAssessmentStep,
 			passingAssessmentStep,
 		},
+		Applicability: testingApplicability,
+	}
+	unknownAssessment = Assessment{
+		Steps: []AssessmentStep{
+			passingAssessmentStep,
+			unknownAssessmentStep,
+			passingAssessmentStep,
+		},
+		Applicability: testingApplicability,
 	}
 	badRevertPassingAssessment = Assessment{
 		Changes: map[string]*Change{
@@ -108,5 +121,6 @@ var (
 			passingAssessmentStep,
 			passingAssessmentStep,
 		},
+		Applicability: testingApplicability,
 	}
 )
