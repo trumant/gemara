@@ -40,6 +40,7 @@ func (c *ControlEvaluation) Evaluate(targetData interface{}, targetApplicability
 	for _, assessment := range c.Assessments {
 		result := assessment.Run(targetData, targetApplicability)
 		c.Result = UpdateAggregateResult(c.Result, result)
+		c.Message = assessment.Message
 		if c.Result == Failed {
 			break
 		}
