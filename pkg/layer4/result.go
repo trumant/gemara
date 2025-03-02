@@ -1,5 +1,9 @@
 package layer4
 
+import "encoding/json"
+
+// Result is an enum representing the result of a control evaluation
+// This is designed to restrict the possible result values to a set of known states
 type Result int
 
 const (
@@ -10,24 +14,30 @@ const (
 	Unknown
 )
 
-func (r Result) String() string {
-	// Only these three values are allowed, with all others falling back to "Unknown"
-	switch r {
-	case Passed:
-		return "Passed"
-	case Failed:
-		return "Failed"
-	case NeedsReview:
-		return "Needs Review"
-	case NotApplicable:
-		return "Not Applicable"
-	default:
-		return "Unknown"
-	}
+var toString = map[Result]string{
+	Passed:        "Passed",
+	Failed:        "Failed",
+	NeedsReview:   "Needs Review",
+	NotApplicable: "Not Applicable",
+	Unknown:       "Unknown",
 }
 
-// checkResultOverride compares the current result with the new result and returns the most severe of the two.
-func checkResultOverride(previous Result, new Result) Result {
+func (r Result) String() string {
+	return toString[r]
+}
+
+// MarshalYAML ensures that Result is serialized as a string in YAML
+func (r Result) MarshalYAML() (interface{}, error) {
+	return r.String(), nil
+}
+
+// MarshalJSON ensures that Result is serialized as a string in JSON
+func (r Result) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.String())
+}
+
+// UpdateAggregateResult compares the current result with the new result and returns the most severe of the two.
+func UpdateAggregateResult(previous Result, new Result) Result {
 	if previous == Failed || new == Failed {
 		// Failed should overwrite anything and immediately stop execution.
 		return Failed

@@ -1,6 +1,12 @@
 package layer4
 
-import "log"
+import (
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"runtime"
+	"time"
+)
 
 // TestResult is a struct that contains the results of a single step within a testSet
 type Assessment struct {
@@ -10,30 +16,67 @@ type Assessment struct {
 	Result         Result             // Passed is true if the test passed
 	Message        string             // Message is the human-readable result of the test
 	Steps          []AssessmentStep   // Steps is a slice of steps that were executed during the test
-	StepsExecuted  int                // StepsExecuted is the number of steps that were executed during the test
+	Steps_Executed int                // Steps_Executed is the number of steps that were executed during the test
+	Run_Duration   string             // Run_Duration is the time it took to run the test
 	Value          interface{}        // Value is the object that was returned during the test
 	Changes        map[string]*Change // Changes is a slice of changes that were made during the test
 }
 
-// AssessmentStep is a function type that inspects the provided targetData and returns a Result with a message
-// The message may be an error string or other descriptive text
-type AssessmentStep func(targetData interface{}, a *Assessment) (Result, string)
+// AssessmentStep is a function type that inspects the provided targetData and returns a Result with a message.
+// The message may be an error string or other descriptive text.
+type AssessmentStep func(payload interface{}, c map[string]*Change) (Result, string)
+
+func (as AssessmentStep) String() string {
+	// Get the function pointer correctly
+	fn := runtime.FuncForPC(reflect.ValueOf(as).Pointer())
+	if fn == nil {
+		return "<unknown function>"
+	}
+	return fn.Name()
+}
+
+func (as AssessmentStep) MarshalJSON() ([]byte, error) {
+	return json.Marshal(as.String())
+}
+
+func (as AssessmentStep) MarshalYAML() (interface{}, error) {
+	return as.String(), nil
+}
+
+// NewAssessment creates a new Assessment object and returns a pointer to it.
+// The function demands a requirementId, description, applicability, and steps.
+func NewAssessment(requirementId string, description string, applicability []string, steps []AssessmentStep) (*Assessment, error) {
+	if requirementId == "" || description == "" || len(applicability) == 0 || len(steps) == 0 {
+		return nil, fmt.Errorf(
+			"expected all NewAssessment fields to have a value, but got: requirementId=%s, description=%s, applicability=%s, steps=%v",
+			requirementId, description, applicability, steps)
+	}
+
+	return &Assessment{
+		Requirement_Id: requirementId,
+		Description:    description,
+		Applicability:  applicability,
+		Result:         Unknown,
+		Steps:          steps,
+	}, nil
+}
 
 // NewStep queues a new step in the Assessment
-func (a *Assessment) NewStep(step AssessmentStep) {
+func (a *Assessment) AddStep(step AssessmentStep) {
 	a.Steps = append(a.Steps, step)
 }
 
 func (a *Assessment) runStep(targetData interface{}, step AssessmentStep) Result {
-	a.StepsExecuted++
-	result, message := step(targetData, a)
-	a.Result = checkResultOverride(a.Result, result)
+	a.Steps_Executed++
+	result, message := step(targetData, a.Changes)
+	a.Result = UpdateAggregateResult(a.Result, result)
 	a.Message = message
 	return result
 }
 
 // Run will execute all steps, halting if any step does not return layer4.Passed
-func (a *Assessment) Run(targetData interface{}, targetApplicability []string) Result {
+func (a *Assessment) Run(targetData interface{}, targetApplicability string) Result {
+	startTime := time.Now()
 	precheck := a.precheck(targetApplicability)
 	if precheck != Passed {
 		return precheck
@@ -43,14 +86,14 @@ func (a *Assessment) Run(targetData interface{}, targetApplicability []string) R
 			return Failed
 		}
 	}
+	a.Run_Duration = time.Since(startTime).String()
 	return a.Result
 }
 
 // RunTolerateFailures will execute all steps, halting only if a step
 // returns an unknown result
-func (a *Assessment) RunTolerateFailures(targetData interface{}, targetApplicability []string) Result {
+func (a *Assessment) RunTolerateFailures(targetData interface{}, targetApplicability string) Result {
 	precheck := a.precheck(targetApplicability)
-	log.Printf("precheck result: %v", precheck)
 	if precheck != Passed {
 		return precheck
 	}
@@ -89,11 +132,7 @@ func (a *Assessment) RevertChanges() (corrupted bool) {
 	return
 }
 
-func (a *Assessment) precheck(targetApplicability []string) Result {
-	if len(a.Steps) == 0 {
-		a.Result = NeedsReview
-		return NeedsReview
-	}
+func (a *Assessment) precheck(targetApplicability string) Result {
 	if !a.isApplicable(targetApplicability) {
 		a.Result = NotApplicable
 		return NotApplicable
@@ -101,13 +140,10 @@ func (a *Assessment) precheck(targetApplicability []string) Result {
 	return Passed
 }
 
-func (a *Assessment) isApplicable(targetApplicability []string) bool {
-	log.Printf("Checking requested applicability (%v) against assessment applicability (%v)", a.Applicability, targetApplicability)
+func (a *Assessment) isApplicable(targetApplicability string) bool {
 	for _, applicability := range a.Applicability {
-		for _, targetApplicability := range targetApplicability {
-			if applicability == targetApplicability {
-				return true
-			}
+		if applicability == targetApplicability {
+			return true
 		}
 	}
 	return false

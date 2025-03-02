@@ -46,13 +46,13 @@ var assessmentsTestData = []struct {
 }
 
 // TestNewStep ensures that NewStep queues a new step in the Assessment
-func TestNewStep(t *testing.T) {
+func TestAddStep(t *testing.T) {
 	for _, test := range assessmentsTestData {
 		t.Run(test.testName, func(t *testing.T) {
 			if len(test.assessment.Steps) != test.numberOfSteps {
 				t.Errorf("Bad test data: expected to start with %d, got %d", test.numberOfSteps, len(test.assessment.Steps))
 			}
-			test.assessment.NewStep(passingAssessmentStep)
+			test.assessment.AddStep(passingAssessmentStep)
 			if len(test.assessment.Steps) != test.numberOfSteps+1 {
 				t.Errorf("expected %d, got %d", test.numberOfSteps, len(test.assessment.Steps))
 			}
@@ -106,12 +106,12 @@ func TestRunStep(t *testing.T) {
 func TestRun(t *testing.T) {
 	for _, data := range assessmentsTestData {
 		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.Run(nil, testingApplicability)
+			result := data.assessment.Run(nil, testingApplicabilityString)
 			if result != data.assessment.Result {
 				t.Errorf("expected match between Run return value (%s) and assessment Result value (%s)", result, data.expectedResult)
 			}
-			if data.assessment.StepsExecuted != data.numberOfStepsToRun {
-				t.Errorf("expected to run %d tests, got %d", data.numberOfStepsToRun, data.assessment.StepsExecuted)
+			if data.assessment.Steps_Executed != data.numberOfStepsToRun {
+				t.Errorf("expected to run %d tests, got %d", data.numberOfStepsToRun, data.assessment.Steps_Executed)
 			}
 		})
 	}
@@ -122,37 +122,28 @@ func TestRunTolerateFailures(t *testing.T) {
 	for _, d := range assessmentsTestData {
 		data := d
 		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.RunTolerateFailures(nil, testingApplicability)
+			result := data.assessment.RunTolerateFailures(nil, testingApplicabilityString)
 			if result != data.assessment.Result {
 				t.Errorf("expected match between RunTolerateFailures return value (%s) and assessment Result value (%s)", result, data.expectedResult)
 			}
-			if data.assessment.StepsExecuted != data.numberOfSteps {
+			if data.assessment.Steps_Executed != data.numberOfSteps {
 				if result != Unknown {
-					t.Errorf("expected to run %d tests, got %d", data.numberOfSteps, data.assessment.StepsExecuted)
+					t.Errorf("expected to run %d tests, got %d", data.numberOfSteps, data.assessment.Steps_Executed)
 				}
 			}
 		})
 		data = d
 		t.Run(data.testName+"_not-applicable", func(t *testing.T) {
-			result := data.assessment.RunTolerateFailures(nil, []string{"not a real applicability"})
+			result := data.assessment.RunTolerateFailures(nil, "not a real applicability")
 			if len(data.assessment.Steps) > 0 && result != NotApplicable {
 				t.Errorf("expected fake applicability value to return value %s but got %s", NotApplicable, result)
 			}
-			if data.assessment.StepsExecuted != 0 {
-				t.Errorf("expected no steps to be executed, got %d", data.assessment.StepsExecuted)
+			if data.assessment.Steps_Executed != 0 {
+				t.Errorf("expected no steps to be executed, got %d", data.assessment.Steps_Executed)
 			}
 		})
 	}
 }
-
-// pendingChange
-// appliedRevertedChange
-// appliedNotRevertedChange
-// badRevertChange
-// goodRevertedChange
-// goodNotRevertedChange
-// noApplyChange
-// noRevertChange
 
 // TestNewChange ensures that NewChange creates a new Change object and adds it to the Assessment
 func TestNewChange(t *testing.T) {
@@ -227,6 +218,72 @@ func TestRevertChanges(t *testing.T) {
 			corrupted := data.assessment.RevertChanges()
 			if corrupted != data.corrupted {
 				t.Errorf("expected corruption to be %t, got %t", data.corrupted, corrupted)
+			}
+		})
+	}
+}
+
+func TestNewAssessment(t *testing.T) {
+	newAssessmentsTestData := []struct {
+		testName      string
+		requirementId string
+		description   string
+		applicability []string
+		steps         []AssessmentStep
+		expectedError bool
+	}{
+		{
+			testName:      "Empty requirementId",
+			requirementId: "",
+			description:   "test",
+			applicability: []string{"test"},
+			steps:         []AssessmentStep{passingAssessmentStep},
+			expectedError: true,
+		},
+		{
+			testName:      "Empty description",
+			requirementId: "test",
+			description:   "",
+			applicability: []string{"test"},
+			steps:         []AssessmentStep{passingAssessmentStep},
+			expectedError: true,
+		},
+		{
+			testName:      "Empty applicability",
+			requirementId: "test",
+			description:   "test",
+			applicability: []string{},
+			steps:         []AssessmentStep{passingAssessmentStep},
+			expectedError: true,
+		},
+		{
+			testName:      "Empty steps",
+			requirementId: "test",
+			description:   "test",
+			applicability: []string{"test"},
+			steps:         []AssessmentStep{},
+			expectedError: true,
+		},
+		{
+			testName:      "Good data",
+			requirementId: "test",
+			description:   "test",
+			applicability: []string{"test"},
+			steps:         []AssessmentStep{passingAssessmentStep},
+			expectedError: false,
+		},
+	}
+	for _, data := range newAssessmentsTestData {
+		t.Run(data.testName, func(t *testing.T) {
+			assessment, err := NewAssessment(data.requirementId, data.description, data.applicability, data.steps)
+			if data.expectedError && err == nil {
+				t.Error("expected error, got nil")
+			}
+			if !data.expectedError && err != nil {
+				t.Errorf("expected no error, got %v", err)
+			}
+			if assessment == nil && !data.expectedError {
+				t.Error("expected assessment object, got nil")
 			}
 		})
 	}
