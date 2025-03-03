@@ -1,4 +1,28 @@
-
+metadata:
+  id: FINOS-CCC
+  title: FINOS Common Cloud Controls
+  description: |
+    FINOS CCC is an open standard project that describes consistent controls for
+    compliant public cloud deployments in the financial services sector.
+  applicability-categories:
+    - id: tlp_clear
+      title: TLP:Clear
+      description: |
+        Information may be shared without restriction.
+    - id: tlp_green
+      title: TLP:Green
+      description: |
+        Information may be shared with partners and restricted to the
+        organization.
+    - id: tlp_amber
+      title: TLP:Amber
+      description: |
+        Information may be shared with partners and restricted to the
+        organization.
+    - id: tlp_red
+      title: TLP:Red
+      description: |
+        Information is restricted to the organization.
 control-families:
   - title: Data Protection
     description: |
