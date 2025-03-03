@@ -18,13 +18,13 @@ type ControlEvaluation struct {
 	Assessments       []*Assessment // Control_Evaluations is a map of testSet names to their results
 }
 
-func (c *ControlEvaluation) AddAssessment(requirementId string, description string, applicability []string, steps []AssessmentStep) (*Assessment, error) {
+func (c *ControlEvaluation) AddAssessment(requirementId string, description string, applicability []string, steps []AssessmentStep) {
 	assessment, err := NewAssessment(requirementId, description, applicability, steps)
 	if err != nil {
-		return nil, err
+		c.Result = Failed
+		c.Message = err.Error()
 	}
 	c.Assessments = append(c.Assessments, assessment)
-	return assessment, nil
 }
 
 // Evaluate runs each step in each assessment, updating the relevant fields on the control evaluation.

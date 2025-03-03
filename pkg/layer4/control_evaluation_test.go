@@ -128,3 +128,18 @@ func TestEvaluate(t *testing.T) {
 		})
 	}
 }
+
+
+func TestAddAssesment(t *testing.T) {
+
+	controlEvaluationTestData[0].control.AddAssessment("test", "test", []string{}, []AssessmentStep{});
+
+	if(controlEvaluationTestData[0].control.Result != Failed) {
+		t.Errorf("Expected Result to be Failed, but it was %v", controlEvaluationTestData[0].control.Result)
+	}
+
+	if(controlEvaluationTestData[0].control.Message != "expected all NewAssessment fields to have a value, but got: requirementId=test, description=test, applicability=[], steps=[]") {
+		t.Errorf("Expected Message to be 'Assessment must have a requirement ID', but it was %v", controlEvaluationTestData[0].control.Message )
+	}
+
+}
