@@ -18,7 +18,6 @@ type ControlEvaluation struct {
 	Assessments       []*Assessment // Control_Evaluations is a map of testSet names to their results
 }
 
-//Update c.result and c. message instead of returning an error
 func (c *ControlEvaluation) AddAssessment(requirementId string, description string, applicability []string, steps []AssessmentStep) {
 	assessment, err := NewAssessment(requirementId, description, applicability, steps)
 	if err != nil {
