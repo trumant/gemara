@@ -6,17 +6,16 @@ import "errors"
 
 var (
 	// Generic applicability for testing
-	testingApplicabilityString = "test-applicability"                 // Executing an evaluation requires a string to determine if the assessment is applicable
-	testingApplicabilitySlice  = []string{testingApplicabilityString} // Assessments need a slice of strings to list the possible applicabilities that will trigger the assessment
+	testingApplicability = []string{"test-applicability"}
 
 	// Functions
-	goodApplyFunc = func() (*interface{}, error) {
+	goodApplyFunc = func() (interface{}, error) {
 		return nil, nil
 	}
 	goodRevertFunc = func() error {
 		return nil
 	}
-	badApplyFunc = func() (*interface{}, error) {
+	badApplyFunc = func() (interface{}, error) {
 		return nil, errors.New("error")
 	}
 	badRevertFunc = func() error {
@@ -102,13 +101,13 @@ var (
 			failingAssessmentStep,
 			passingAssessmentStep,
 		},
-		Applicability: testingApplicabilitySlice,
+		Applicability: testingApplicability,
 	}
 	passingAssessment = Assessment{
 		Steps: []AssessmentStep{
 			passingAssessmentStep,
 		},
-		Applicability: testingApplicabilitySlice,
+		Applicability: testingApplicability,
 	}
 	needsReviewAssessment = Assessment{
 		Steps: []AssessmentStep{
@@ -116,7 +115,7 @@ var (
 			needsReviewAssessmentStep,
 			passingAssessmentStep,
 		},
-		Applicability: testingApplicabilitySlice,
+		Applicability: testingApplicability,
 	}
 	unknownAssessment = Assessment{
 		Steps: []AssessmentStep{
@@ -124,7 +123,7 @@ var (
 			unknownAssessmentStep,
 			passingAssessmentStep,
 		},
-		Applicability: testingApplicabilitySlice,
+		Applicability: testingApplicability,
 	}
 	badRevertPassingAssessment = Assessment{
 		Changes: map[string]*Change{
@@ -136,6 +135,6 @@ var (
 			passingAssessmentStep,
 			passingAssessmentStep,
 		},
-		Applicability: testingApplicabilitySlice,
+		Applicability: testingApplicability,
 	}
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type ApplyFunc func() (*interface{}, error)
+type ApplyFunc func() (interface{}, error)
 type RevertFunc func() error
 
 // Change is a struct that contains the data and functions associated with a single change to a target resource.

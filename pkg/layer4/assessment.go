@@ -2,6 +2,7 @@ package layer4
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"runtime"
@@ -46,19 +47,15 @@ func (as AssessmentStep) MarshalYAML() (interface{}, error) {
 // NewAssessment creates a new Assessment object and returns a pointer to it.
 // The function demands a requirementId, description, applicability, and steps.
 func NewAssessment(requirementId string, description string, applicability []string, steps []AssessmentStep) (*Assessment, error) {
-	if requirementId == "" || description == "" || len(applicability) == 0 || len(steps) == 0 {
-		return nil, fmt.Errorf(
-			"expected all NewAssessment fields to have a value, but got: requirementId=%s, description=%s, applicability=%s, steps=%v",
-			requirementId, description, applicability, steps)
-	}
-
-	return &Assessment{
+	a := &Assessment{
 		Requirement_Id: requirementId,
 		Description:    description,
 		Applicability:  applicability,
-		Result:         Unknown,
+		Result:         NotRun,
 		Steps:          steps,
-	}, nil
+	}
+	err := a.precheck(applicability)
+	return a, err
 }
 
 // NewStep queues a new step in the Assessment
@@ -75,11 +72,12 @@ func (a *Assessment) runStep(targetData interface{}, step AssessmentStep) Result
 }
 
 // Run will execute all steps, halting if any step does not return layer4.Passed
-func (a *Assessment) Run(targetData interface{}, targetApplicability string) Result {
+func (a *Assessment) Run(targetData interface{}, applicability []string) Result {
 	startTime := time.Now()
-	precheck := a.precheck(targetApplicability)
-	if precheck != Passed {
-		return precheck
+	err := a.precheck(applicability)
+	if err != nil {
+		a.Result = Unknown
+		return a.Result
 	}
 	for _, step := range a.Steps {
 		if a.runStep(targetData, step) == Failed {
@@ -92,10 +90,11 @@ func (a *Assessment) Run(targetData interface{}, targetApplicability string) Res
 
 // RunTolerateFailures will execute all steps, halting only if a step
 // returns an unknown result
-func (a *Assessment) RunTolerateFailures(targetData interface{}, targetApplicability string) Result {
-	precheck := a.precheck(targetApplicability)
-	if precheck != Passed {
-		return precheck
+func (a *Assessment) RunTolerateFailures(targetData interface{}, applicability []string) Result {
+	err := a.precheck(applicability)
+	if err != nil {
+		a.Result = Unknown
+		return a.Result
 	}
 	for _, step := range a.Steps {
 		a.runStep(targetData, step)
@@ -104,13 +103,14 @@ func (a *Assessment) RunTolerateFailures(targetData interface{}, targetApplicabi
 }
 
 // NewChange creates a new Change object and adds it to the Assessment
-func (a *Assessment) NewChange(changeName string, targetName string, targetObject *interface{}, applyFunc ApplyFunc, revertFunc RevertFunc) *Change {
+func (a *Assessment) NewChange(changeName, targetName, description string, targetObject interface{}, applyFunc ApplyFunc, revertFunc RevertFunc) *Change {
 	if a.Changes == nil {
 		a.Changes = make(map[string]*Change)
 	}
 	a.Changes[changeName] = &Change{
 		Target_Name:   targetName,
 		Target_Object: targetObject,
+		Description:   description,
 		applyFunc:     applyFunc,
 		revertFunc:    revertFunc,
 	}
@@ -132,18 +132,29 @@ func (a *Assessment) RevertChanges() (corrupted bool) {
 	return
 }
 
-func (a *Assessment) precheck(targetApplicability string) Result {
-	if !a.isApplicable(targetApplicability) {
-		a.Result = NotApplicable
-		return NotApplicable
+func (a *Assessment) precheck(applicability []string) error {
+	if a.Requirement_Id == "" || a.Description == "" || a.Applicability == nil || a.Steps == nil || len(a.Applicability) == 0 || len(a.Steps) == 0 {
+		message := fmt.Sprintf(
+			"expected all Assessment fields to have a value, but got: requirementId=len(%v), description=len=(%v), applicability=len(%v), steps=len(%v)",
+			len(a.Requirement_Id), len(a.Description), len(a.Applicability), len(a.Steps),
+		)
+		a.Result = Unknown
+		a.Message = message
+		return errors.New(message)
 	}
-	return Passed
+
+	if !a.isApplicable(applicability) {
+		a.Result = NotApplicable
+	}
+	return nil
 }
 
-func (a *Assessment) isApplicable(targetApplicability string) bool {
+func (a *Assessment) isApplicable(targetApplicabilities []string) bool {
 	for _, applicability := range a.Applicability {
-		if applicability == targetApplicability {
-			return true
+		for _, targetApplicability := range targetApplicabilities {
+			if applicability == targetApplicability {
+				return true
+			}
 		}
 	}
 	return false

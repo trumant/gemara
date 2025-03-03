@@ -106,7 +106,7 @@ func TestRunStep(t *testing.T) {
 func TestRun(t *testing.T) {
 	for _, data := range assessmentsTestData {
 		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.Run(nil, testingApplicabilityString)
+			result := data.assessment.Run(nil, testingApplicability)
 			if result != data.assessment.Result {
 				t.Errorf("expected match between Run return value (%s) and assessment Result value (%s)", result, data.expectedResult)
 			}
@@ -122,7 +122,7 @@ func TestRunTolerateFailures(t *testing.T) {
 	for _, d := range assessmentsTestData {
 		data := d
 		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.RunTolerateFailures(nil, testingApplicabilityString)
+			result := data.assessment.RunTolerateFailures(nil, testingApplicability)
 			if result != data.assessment.Result {
 				t.Errorf("expected match between RunTolerateFailures return value (%s) and assessment Result value (%s)", result, data.expectedResult)
 			}
@@ -134,7 +134,7 @@ func TestRunTolerateFailures(t *testing.T) {
 		})
 		data = d
 		t.Run(data.testName+"_not-applicable", func(t *testing.T) {
-			result := data.assessment.RunTolerateFailures(nil, "not a real applicability")
+			result := data.assessment.RunTolerateFailures(nil, []string{"not a real applicability"})
 			if len(data.assessment.Steps) > 0 && result != NotApplicable {
 				t.Errorf("expected fake applicability value to return value %s but got %s", NotApplicable, result)
 			}
@@ -153,7 +153,7 @@ func TestNewChange(t *testing.T) {
 		if len(anyOldAssessment.Changes) != 0 {
 			t.Errorf("Expected empty assessment object to start with 0 Change objects, got %d", len(anyOldAssessment.Changes))
 		}
-		change := anyOldAssessment.NewChange(testName, "", nil, goodApplyFunc, goodRevertFunc)
+		change := anyOldAssessment.NewChange(testName, "targetName", "description", nil, goodApplyFunc, goodRevertFunc)
 		if len(anyOldAssessment.Changes) != 1 {
 			t.Errorf("Expected assessment object to have 1 Change object, got %d", len(anyOldAssessment.Changes))
 		}

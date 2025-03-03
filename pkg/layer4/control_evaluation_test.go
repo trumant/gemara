@@ -101,7 +101,7 @@ func TestEvaluate(t *testing.T) {
 	for _, c := range controlEvaluationTestData {
 		t.Run(c.testName, func(t *testing.T) {
 
-			c.control.Evaluate(nil, testingApplicabilityString)
+			c.control.Evaluate(nil, testingApplicability)
 
 			if c.control.Result != c.expectedResult {
 				t.Errorf("Expected Result to be %v, but it was %v", c.expectedResult, c.control.Result)
@@ -114,7 +114,7 @@ func TestEvaluate(t *testing.T) {
 
 		t.Run("Tolerant"+c.testName, func(t *testing.T) {
 
-			c.control.TolerantEvaluate(nil, testingApplicabilityString)
+			c.control.TolerantEvaluate(nil, testingApplicability)
 
 			if c.control.Result != c.expectedResult {
 				t.Errorf("Expected Result to be %v, but it was %v", c.expectedResult, c.control.Result)
@@ -129,17 +129,16 @@ func TestEvaluate(t *testing.T) {
 	}
 }
 
-
 func TestAddAssesment(t *testing.T) {
 
-	controlEvaluationTestData[0].control.AddAssessment("test", "test", []string{}, []AssessmentStep{});
+	controlEvaluationTestData[0].control.AddAssessment("test", "test", []string{}, []AssessmentStep{})
 
-	if(controlEvaluationTestData[0].control.Result != Failed) {
+	if controlEvaluationTestData[0].control.Result != Failed {
 		t.Errorf("Expected Result to be Failed, but it was %v", controlEvaluationTestData[0].control.Result)
 	}
 
-	if(controlEvaluationTestData[0].control.Message != "expected all NewAssessment fields to have a value, but got: requirementId=test, description=test, applicability=[], steps=[]") {
-		t.Errorf("Expected Message to be 'Assessment must have a requirement ID', but it was %v", controlEvaluationTestData[0].control.Message )
+	if controlEvaluationTestData[0].control.Message != "expected all NewAssessment fields to have a value, but got: requirementId=test, description=test, applicability=[], steps=[]" {
+		t.Errorf("Expected Message to be 'Assessment must have a requirement ID', but it was %v", controlEvaluationTestData[0].control.Message)
 	}
 
 }

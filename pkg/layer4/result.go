@@ -7,7 +7,8 @@ import "encoding/json"
 type Result int
 
 const (
-	Passed Result = iota
+	NotRun Result = iota
+	Passed
 	Failed
 	NeedsReview
 	NotApplicable
@@ -15,6 +16,7 @@ const (
 )
 
 var toString = map[Result]string{
+	NotRun:        "Not Run",
 	Passed:        "Passed",
 	Failed:        "Failed",
 	NeedsReview:   "Needs Review",
@@ -38,17 +40,27 @@ func (r Result) MarshalJSON() ([]byte, error) {
 
 // UpdateAggregateResult compares the current result with the new result and returns the most severe of the two.
 func UpdateAggregateResult(previous Result, new Result) Result {
+	if new == NotRun {
+		// Not Run should not overwrite anything
+		// Failed should not be overwritten by anything
+		// Failed should overwrite anything
+		return previous
+	}
+
 	if previous == Failed || new == Failed {
-		// Failed should overwrite anything and immediately stop execution.
+		// Failed should not be overwritten by anything
+		// Failed should overwrite anything
 		return Failed
 	}
 
 	if previous == Unknown || new == Unknown {
-		// If the current result is Unknown, it should not be overwritten by NeedsReview or Passed.
+		// If the current or past result is Unknown, it should not be overwritten by NeedsReview or Passed.
 		return Unknown
 	}
+
 	if previous == NeedsReview || new == NeedsReview {
-		// If the current result is NeedsReview, it should not be overwritten by Passed.
+		// NeedsReview should not be overwritten by Passed
+		// NeedsReview should overwrite Passed
 		return NeedsReview
 	}
 	return Passed
