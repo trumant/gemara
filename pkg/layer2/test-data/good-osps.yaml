@@ -49,7 +49,7 @@ metadata:
       url: https://github.com/slsa-framework/slsa
 
 control-families:
-  - category: Access Control
+  - name: Access Control
     description: |
       Access Control focuses on the mechanisms and
       policies that control access to the project's version
@@ -67,8 +67,7 @@ control-families:
           Reduce the risk of account compromise or insider threats by requiring
           multi-factor authentication for collaborators modifying the project
           repository settings or accessing sensitive data.
-        family: Access Control
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - CC-G-1
@@ -94,7 +93,7 @@ control-families:
               - 333-858
               - 152-725
               - 201-246
-        assessment-requirements:
+        requirements:
           - id: OSPS-AC-01.01
             text: |
               When a user attempts to access a sensitive resource in the project's
@@ -117,8 +116,7 @@ control-families:
         objective: |
           Reduce the risk of unauthorized access to the project's repository by
           limiting the permissions granted to new collaborators.
-        family: Access Control
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2f
@@ -139,7 +137,7 @@ control-families:
               - 802-056
               - 368-633
               - 152-725
-        assessment-requirements:
+        requirements:
           - id: OSPS-AC-02.01
             text: |
               When a new collaborator is added, the version control system MUST
@@ -162,8 +160,7 @@ control-families:
         objective: |
           Reduce the risk of accidental changes or deletion of the primary branch
           of the project's repository by preventing unintentional modification.
-        family: Access Control
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2f
@@ -184,7 +181,7 @@ control-families:
           - reference-id: ScCrd
             identifiers:
               - Branch-Protection 
-        assessment-requirements:
+        requirements:
           - id: OSPS-AC-03.01
             text: |
               When a direct commit is attempted on the project's primary branch,
@@ -220,8 +217,7 @@ control-families:
           Reduce the risk of unauthorized access to the project's build and release
           processes by limiting the permissions granted to steps within the CI/CD
           pipelines.
-        family: Access Control
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2d
@@ -248,7 +244,7 @@ control-families:
             identifiers:
               - Producer - Choose an appropriate build platform
               - Build platform - Isolation strength - Isolated
-        assessment-requirements:
+        requirements:
           - id: OSPS-AC-04.01
             text: |
               When a CI/CD task is executed with no permissions specified, the
@@ -275,7 +271,7 @@ control-families:
               systems, this may be possible at the organizational or repository
               level. If not, set permissions at the top level of the pipeline.
 
-  - category: Build and Release
+  - name: Build and Release
     description: |
       Build and Release focuses on the processes and
       tools used to compile, package, and distribute the
@@ -293,8 +289,7 @@ control-families:
           Reduce the risk of code injection or other security vulnerabilities in the
           project's build and release pipelines by preventing untrusted input from
           accessing privileged resources.
-        family: Build and Release
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2f
@@ -315,7 +310,7 @@ control-families:
           - reference-id: SLSA
             identifiers:
               - Choose an appropriate build platform
-        assessment-requirements:
+        requirements:
           - id: OSPS-BR-01.01
             text: |
               When a CI/CD pipeline accepts an input parameter, that parameter MUST
@@ -344,8 +339,7 @@ control-families:
           Ensure that each software asset produced by the project is uniquely
           identified, enabling users to track changes and updates to the project
           over time.
-        family: Build and Release
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - CC-B-5
@@ -368,7 +362,7 @@ control-families:
             identifiers:
               - Follow a consistent build process
               - Provenance generation- Exists, Authentic
-        assessment-requirements:
+        requirements:
           - id: OSPS-BR-02.01
             text: |
               When an official release is created, that release MUST be assigned a
@@ -398,8 +392,7 @@ control-families:
         objective: |
           Protect the confidentiality and integrity of project source code during
           development, reducing the risk of eavesdropping or data tampering.
-        family: Build and Release
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-11
@@ -425,7 +418,7 @@ control-families:
           - reference-id: SLSA
             identifiers:
               - Choose an appropriate build platform
-        assessment-requirements:
+        requirements:
           - id: OSPS-BR-03.01
             text: |
               When the project lists a URI as an official project channel, that URI
@@ -457,8 +450,7 @@ control-families:
           Provide transparency and accountability for changes made to the project's
           software releases, enabling users to understand the modifications and
           improvements included in each release.
-        family: Build and Release
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - CC-B-8
@@ -496,7 +488,7 @@ control-families:
               - Choose an appropriate build platform
               - Follow a consistent build process
               - Build platform - Isolation strength - isolated
-        assessment-requirements:
+        requirements:
           - id: OSPS-BR-04.01
             text: |
               When an official release is created, that release MUST contain
@@ -521,8 +513,7 @@ control-families:
           Ensure that the project's build and release pipelines use standardized tools
           and processes to manage dependencies, reducing the risk of compatibility
           issues or security vulnerabilities in the software.
-        family: Build and Release
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - Q-B-2
@@ -550,7 +541,7 @@ control-families:
           - reference-id: SLSA
             identifiers:
               - Isolation strength - isolated
-        assessment-requirements:
+        requirements:
           - id: OSPS-BR-05.01
             text: |
               When a build and release pipeline ingests dependencies, it MUST
@@ -571,8 +562,7 @@ control-families:
         objective: |
           All released software assets MUST be signed or accounted for in a
           signed manifest including each asset's cryptographic hashes.
-        family: Build and Release
-        mappings:
+        rule-mappings:
           - reference-id: SSDF
             identifiers:
               - PO5.2
@@ -585,7 +575,7 @@ control-families:
           - reference-id: SLSA
             identifiers:
               - Distribute provenance - Exists
-        assessment-requirements:
+        requirements:
           - id: OSPS-BR-06.01
             text: |
               When an official release is created, that release MUST be signed or
@@ -600,7 +590,7 @@ control-families:
               signatures, SLSA provenance, or SLSA VSAs. Include the cryptographic
               hashes of each asset in a signed manifest or metadata file.
 
-  - category: Documentation
+  - name: Documentation
     description: |
       Documentation focuses on the information
       provided to users, contributors, and maintainers
@@ -617,8 +607,7 @@ control-families:
           Ensure that users have a clear and comprehensive understanding of the
           project's current features in order to prevent damage from misuse or
           misconfiguration.
-        family: Documentation
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-1
@@ -643,7 +632,7 @@ control-families:
           - reference-id: OCRE
             identifiers:
               - 036-275
-        assessment-requirements:
+        requirements:
           - id: OSPS-DO-01.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -665,8 +654,7 @@ control-families:
           Enable users and contributors to report defects or issues with the
           released software assets, facilitating communication and collaboration on
           defect fixes and improvements.
-        family: Documentation
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-3
@@ -695,7 +683,7 @@ control-families:
           - reference-id: OC
             identifiers:
               - 4.2.1
-        assessment-requirements:
+        requirements:
           - id: OSPS-DO-02.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -721,8 +709,7 @@ control-families:
           Enable users to verify the authenticity and integrity of the project's
           released software assets, reducing the risk of using tampered or
           unauthorized versions of the software.
-        family: Documentation
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - CC-B-8
@@ -739,7 +726,7 @@ control-families:
           - reference-id: OCRE
             identifiers:
               - 171-222
-        assessment-requirements:
+        requirements:
           - id: OSPS-DO-03.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -778,8 +765,7 @@ control-families:
           Provide users with clear expectations regarding the project's support
           lifecycle. This allows downstream consumers to take relevant actions to
           ensure the continued functionality and security of their systems.
-        family: Documentation
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - R-B-3
@@ -792,7 +778,7 @@ control-families:
             identifiers:
               - 4.1
               - 4.3.1
-        assessment-requirements:
+        requirements:
           - id: OSPS-DO-04.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -813,8 +799,7 @@ control-families:
           Communicating when the project maintainers will no longer fix defects or
           security vulnerabilities is crucial for downstream consumers to find
           alternative solutions or alternative means of support for the project.
-        family: Documentation
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2c
@@ -827,7 +812,7 @@ control-families:
             identifiers:
               - 673-475
               - 053-751
-        assessment-requirements:
+        requirements:
           - id: OSPS-DO-05.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -849,8 +834,7 @@ control-families:
           dependencies, libraries, frameworks, etc. to help downstream consumers
           understand how the project operates in regards to third-party components
           that are required necessary for the software to function.
-        family: Documentation
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - A-S-1
@@ -864,7 +848,7 @@ control-families:
           - reference-id: CRA
             identifiers:
               - Pinned-Dependencies
-        assessment-requirements:
+        requirements:
           - id: OSPS-DO-06.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -878,7 +862,7 @@ control-families:
               technical & design documentation on a publicly viewable resource such
               as the source code repository, project website, or other channel.
 
-  - category: Governance
+  - name: Governance
     description: |
       Governance focuses on the policies and
       procedures that guide the project's decision-making
@@ -895,8 +879,7 @@ control-families:
           potential contributors, and downstream consumers have an accurate
           understanding of who is working on the project and what areas of authority
           they may have.
-        family: Governance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-S-3
@@ -904,7 +887,7 @@ control-families:
           - reference-id: OCRE
             identifiers:
               - 013-021
-        assessment-requirements:
+        requirements:
           - id: OSPS-GV-01.01
             text: |
               While active, the project documentation MUST include a list of
@@ -938,8 +921,7 @@ control-families:
           Encourages open communication and collaboration within the project
           community, enabling users to provide feedback and discuss proposed changes
           or usage challenges.
-        family: Governance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-3
@@ -954,7 +936,7 @@ control-families:
             identifiers:
               - PS3
               - PW1.2
-        assessment-requirements:
+        requirements:
           - id: OSPS-GV-02.01
             text: |
               While active, the project MUST have one or more mechanisms for public
@@ -976,8 +958,7 @@ control-families:
           Provide guidance to new contributors on how to participate in the project,
           outlining the steps required to submit changes or enhancements to the
           project's codebase.
-        family: Governance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-4
@@ -995,7 +976,7 @@ control-families:
           - reference-id: OC
             identifiers:
               - 4.1.2
-        assessment-requirements:
+        requirements:
           - id: OSPS-GV-03.01
             text: |
               While active, the project documentation MUST include an explanation
@@ -1031,8 +1012,7 @@ control-families:
           Ensure that code contributors are vetted and reviewed before being granted
           elevated permissions to sensitive resources within the project, reducing
           the risk of unauthorized access or misuse.
-        family: Governance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-5
@@ -1062,7 +1042,7 @@ control-families:
           - reference-id: OC
             identifiers:
               - 4.1.2     
-        assessment-requirements:
+        requirements:
           - id: OSPS-GV-04.01
             text: |
               While active, the project documentation MUST have a policy that code
@@ -1078,7 +1058,7 @@ control-families:
               establishing a justifiable lineage of identity such as confirming the
               contributor's association with a known trusted organization.
 
-  - category: Legal
+  - name: Legal
     description: |
       Legal focuses on the policies and
       procedures that govern the project's licensing
@@ -1098,8 +1078,7 @@ control-families:
           Ensure that code contributors are aware of and acknowledge their legal
           responsibility for the contributions they make to the project, reducing
           the risk of intellectual property disputes against the project.
-        family: Legal
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-S-1
@@ -1113,7 +1092,7 @@ control-families:
               - PS1
               - PW1.2
               - PW2.1
-        assessment-requirements:
+        requirements:
           - id: OSPS-LE-01.01
             text: |
               While active, the version control system MUST require all code
@@ -1138,8 +1117,7 @@ control-families:
           Ensure that the project's source code is distributed under a recognized
           and legally enforceable open source software license, providing clarity on
           how the code can be used and shared by others.
-        family: Legal
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-6
@@ -1153,7 +1131,7 @@ control-families:
           - reference-id: CSF
             identifiers:
               - GV.OC-03
-        assessment-requirements:
+        requirements:
           - id: OSPS-LE-02.01
             text: |
               While active, the license for the source code MUST meet the OSI Open
@@ -1195,8 +1173,7 @@ control-families:
           Ensure that the project's source code and released software assets are
           distributed with the appropriate license terms, making it clear to users
           and contributors how each can be used and shared.
-        family: Legal
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-8
@@ -1206,7 +1183,7 @@ control-families:
           - reference-id: SSDF
             identifiers:
               - PO3.2
-        assessment-requirements:
+        requirements:
           - id: OSPS-LE-03.01
             text: |
               While active, the license for the source code MUST be maintained in
@@ -1240,7 +1217,7 @@ control-families:
               If the project has multiple repositories, ensure that each repository
               includes the license file.
 
-  - category: Quality
+  - name: Quality
     description: |
       Quality focuses on the processes and
       practices used to ensure the quality and
@@ -1258,8 +1235,7 @@ control-families:
         objective: |
           Enable users to access and review the project's source code and history,
           promoting transparency and collaboration within the project community.
-        family: Quality Assurance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - CC-B-1
@@ -1294,7 +1270,7 @@ control-families:
           - reference-id: SLSA
             identifiers:
               - Build platform - isolation strength - Isolated
-        assessment-requirements:
+        requirements:
           - id: OSPS-QA-01.01
             text: |
               While active, the project's source code repository MUST be publicly
@@ -1330,8 +1306,7 @@ control-families:
           Provide transparency and accountability for the project's dependencies
           while enabling users and contributors to understand the software's direct
           dependencies.
-        family: Quality Assurance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - Q-S-8
@@ -1363,7 +1338,7 @@ control-families:
               - 673-475
               - 863-521
               - 613-286
-        assessment-requirements:
+        requirements:
           - id: OSPS-QA-02.01
             text: |
               When the package management system supports it, the source code
@@ -1398,8 +1373,7 @@ control-families:
           failing status checks, even if arbitrary, because it increases the risk of
           overlooking security vulnerabilities or defects identified by automated
           checks.
-        family: Quality Assurance
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2f
@@ -1420,7 +1394,7 @@ control-families:
             identifiers:
               - 263-184
               - 253-452
-        assessment-requirements:
+        requirements:
           - id: OSPS-QA-03.01
             text: |
               When a commit is made to the primary branch, any automated status
@@ -1444,8 +1418,7 @@ control-families:
           Ensure that additional code repositories or subprojects produced by the
           project are held to a standard that is clear and appropriate for that
           codebase.
-        family: Quality Assurance
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2b
@@ -1464,7 +1437,7 @@ control-families:
           - reference-id: SLSA
             identifiers:
               - Build platform - isolation strength - Isolated
-        assessment-requirements:
+        requirements:
           - id: OSPS-QA-04.01
             text: |
               While active, the project documentation MUST contain a list of any
@@ -1501,8 +1474,7 @@ control-families:
           Reduce the risk of including generated executable artifacts in the
           project's version control system, ensuring that only source code and
           necessary files are stored in the repository.
-        family: Quality Assurance
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2b
@@ -1514,7 +1486,7 @@ control-families:
             identifiers:
               - 486-813
               - 124-564
-        assessment-requirements:
+        requirements:
           - id: OSPS-QA-05.01
             text: |
               While active, the version control system MUST NOT contain generated
@@ -1537,8 +1509,7 @@ control-families:
         objective: |
           Ensure that the project uses at least one automated test suite for the
           source code repository which clearly documents when and how tests are run.
-        family: Quality Assurance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - Q-B-4
@@ -1562,7 +1533,7 @@ control-families:
             identifiers:
               - 207-435
               - 088-377
-        assessment-requirements:
+        requirements:
           - id: OSPS-QA-06.01
             text: |
               Prior to a commit being accepted, the project's CI/CD pipelines MUST
@@ -1610,12 +1581,11 @@ control-families:
           Ensure that the project's version control system requires at least one
           non-author approval of changes before merging into the release or primary
           branch.
-        family: Quality Assurance
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-G-3
-        assessment-requirements:
+        requirements:
           - id: OSPS-QA-07.01
             text: |
               When a commit is made to the primary branch, the project's version
@@ -1630,7 +1600,7 @@ control-families:
               reviewed and approved by at least one other contributor before it can
               be merged.
 
-  - category: Security Assessment
+  - name: Security Assessment
     description: |
       Security Assessment encourages practices that
       help ensure that the project is well positioned
@@ -1646,8 +1616,7 @@ control-families:
           the interactions and components of the system to help contributors and
           security reviewers understand the internal logic of the released software
           assets.
-        family: Security Assessment
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-1
@@ -1672,7 +1641,7 @@ control-families:
               - 068-102
               - 036-275
               - 162-655
-        assessment-requirements:
+        requirements:
           - id: OSPS-SA-01.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -1696,8 +1665,7 @@ control-families:
           Provide users and developers with an understanding of how to interact with
           the project's software and integrate it with other systems, enabling them
           to use the software effectively.
-        family: Security Assessment
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-B-10
@@ -1722,7 +1690,7 @@ control-families:
               - 068-102
               - 072-713
               - 820-878
-        assessment-requirements:
+        requirements:
           - id: OSPS-SA-02.01
             text: |
               When the project has made a release, the project documentation MUST
@@ -1744,8 +1712,7 @@ control-families:
           Provide project maintainers an understanding of how the software can be
           misused or broken allows them to plan mitigations to close off the potential
           of those threats from occurring.
-        family: Security Assessment
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-S-8
@@ -1774,7 +1741,7 @@ control-families:
               - 068-102
               - 154-031
               - 888-770
-        assessment-requirements:
+        requirements:
           - id: OSPS-SA-03.01
             text: |
               When the project has made a release, the project MUST perform a
@@ -1808,7 +1775,7 @@ control-families:
               any gaps/vulnerabilities that could arise.
               Ensure this is updated for new features or breaking changes.
 
-  - category: Vulnerability Management
+  - name: Vulnerability Management
     description: |
       Vulnerability Management focuses on the
       processes and practices used to identify and
@@ -1825,8 +1792,7 @@ control-families:
           Establish a process for reporting and addressing vulnerabilities in the
           project, ensuring that security issues are handled promptly and 
           transparently.
-        family: Vulnerability Management
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - R-B-6
@@ -1862,7 +1828,7 @@ control-families:
           - reference-id: ScCrd
             identifiers:
               - Security-policy          
-        assessment-requirements:
+        requirements:
           - id: OSPS-VM-01.01
             text: |
               While active, the project documentation MUST
@@ -1886,8 +1852,7 @@ control-families:
           vulnerabilities in a project. People with vulnerabilities to report should
           have a clear understanding of the process so that they can quickly submit
           the report to the project.
-        family: Vulnerability Management
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-S-8
@@ -1914,7 +1879,7 @@ control-families:
           - reference-id: ScCrd
             identifiers:
               - Security-policy                  
-        assessment-requirements:
+        requirements:
           - id: OSPS-VM-02.01
             text: |
               While active, the project documentation MUST contain
@@ -1933,8 +1898,7 @@ control-families:
           Security vulnerabilities should not be shared with the public until such
           time the project has been provided time to analyze and prepare 
           remediations to protect users of the project.
-        family: Vulnerability Management
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - R-B-7
@@ -1945,7 +1909,7 @@ control-families:
           - reference-id: OCRE
             identifiers:
               - 308-514
-        assessment-requirements:
+        requirements:
           - id: OSPS-VM-03.01
             text: |
               While active, the project documentation MUST
@@ -1966,8 +1930,7 @@ control-families:
         objective: |
           Consumers of the project must be informed about known vulnerabilities
           found within the project.
-        family: Vulnerability Management
-        mappings:
+        rule-mappings:
           - reference-id: CRA
             identifiers:
               - 1.2a
@@ -1986,7 +1949,7 @@ control-families:
           - reference-id: OC
             identifiers:
               - 4.1.5
-        assessment-requirements:
+        requirements:
           - id: OSPS-VM-04.01
             text: |
               While active, the project documentation MUST
@@ -2025,8 +1988,7 @@ control-families:
           is merged as well as before it releases, reducing the risk of compromised
           delivery mechanisms or released software assets that are vulnerable or
           malicious.
-        family: Vulnerability Management
-        mappings:
+        rule-mappings:
           - reference-id: BPB
             identifiers:
               - B-S-8
@@ -2084,7 +2046,7 @@ control-families:
             identifiers:
               - Security-policy  
               - Vulnerabilities
-        assessment-requirements:
+        requirements:
           - id: OSPS-VM-05.01
             text: |
               While active, the project documentation MUST include a policy that
@@ -2130,8 +2092,7 @@ control-families:
           Identify and address defects and security weaknesses in the project's
           codebase early in the development process, reducing the risk of shipping
           insecure software.
-        family: Vulnerability Management
-        mappings: 
+        rule-mappings: 
           - reference-id: BPB
             identifiers:
               - B-S-8
@@ -2189,7 +2150,7 @@ control-families:
             identifiers:
               - Security-policy  
               - Vulnerabilities
-        assessment-requirements:
+        requirements:
           - id: OSPS-VM-06.01
             text: |
               While active, the project documentation MUST include a policy that
