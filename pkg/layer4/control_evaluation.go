@@ -31,37 +31,31 @@ func (c *ControlEvaluation) AddAssessment(requirementId string, description stri
 // Evaluate runs each step in each assessment, updating the relevant fields on the control evaluation.
 // It will halt if a step returns a failed result.
 // `targetData` is the data that the assessment will be run against.
-// `targetApplicability` is a slice of strings that determine when the assessment is applicable.
-func (c *ControlEvaluation) Evaluate(targetData interface{}, targetApplicability []string) {
+// `userApplicability` is a slice of strings that determine when the assessment is applicable.
+func (c *ControlEvaluation) Evaluate(targetData interface{}, userApplicability []string) {
 	if len(c.Assessments) == 0 {
 		c.Result = NeedsReview
 		return
 	}
 	c.closeHandler()
 	for _, assessment := range c.Assessments {
-		result := assessment.Run(targetData, targetApplicability)
-		c.Result = UpdateAggregateResult(c.Result, result)
-		c.Message = assessment.Message
-		if c.Result == Failed {
-			break
+		var applicabile bool
+		for _, aa := range assessment.Applicability {
+			for _, ua := range userApplicability {
+				if aa == ua {
+					applicabile = true
+					break
+				}
+			}
 		}
-	}
-	c.Cleanup()
-}
-
-// TolerantEvaluate runs each step in each assessment, updating the relevant fields on the control evaluation
-// It will not halt if a step returns an failed result.
-// `targetData` is the data that the assessment will be run against.
-// `targetApplicability` is a slice of strings that determine when the assessment is applicable.
-func (c *ControlEvaluation) TolerantEvaluate(targetData interface{}, targetApplicability []string) {
-	if len(c.Assessments) == 0 {
-		c.Result = NeedsReview
-		return
-	}
-	c.closeHandler()
-	for _, assessment := range c.Assessments {
-		result := assessment.RunTolerateFailures(targetData, targetApplicability)
-		c.Result = UpdateAggregateResult(c.Result, result)
+		if applicabile {
+			result := assessment.Run(targetData)
+			c.Result = UpdateAggregateResult(c.Result, result)
+			c.Message = assessment.Message
+			if c.Result == Failed {
+				break
+			}
+		}
 	}
 	c.Cleanup()
 }

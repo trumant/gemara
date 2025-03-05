@@ -111,21 +111,6 @@ func TestEvaluate(t *testing.T) {
 				t.Errorf("Expected Corrupted_State to be %v, but it was %v", c.expectedCorrupted, c.control.Corrupted_State)
 			}
 		})
-
-		t.Run("Tolerant"+c.testName, func(t *testing.T) {
-
-			c.control.TolerantEvaluate(nil, testingApplicability)
-
-			if c.control.Result != c.expectedResult {
-				t.Errorf("Expected Result to be %v, but it was %v", c.expectedResult, c.control.Result)
-			}
-			if c.control.Corrupted_State != c.expectedCorrupted {
-				t.Errorf("Expected Corrupted_State to be %v, but it was %v", c.expectedCorrupted, c.control.Corrupted_State)
-			}
-			if c.failBeforePass && c.control.Assessments[1].Result != Passed {
-				t.Errorf("Expected to continue after first failure, but didn't")
-			}
-		})
 	}
 }
 
@@ -137,8 +122,8 @@ func TestAddAssesment(t *testing.T) {
 		t.Errorf("Expected Result to be Failed, but it was %v", controlEvaluationTestData[0].control.Result)
 	}
 
-	if controlEvaluationTestData[0].control.Message != "expected all NewAssessment fields to have a value, but got: requirementId=test, description=test, applicability=[], steps=[]" {
-		t.Errorf("Expected Message to be 'Assessment must have a requirement ID', but it was %v", controlEvaluationTestData[0].control.Message)
+	if controlEvaluationTestData[0].control.Message != "expected all Assessment fields to have a value, but got: requirementId=len(4), description=len=(4), applicability=len(0), steps=len(0)" {
+		t.Errorf("Expected error message to be 'expected all Assessment fields to have a value, but got: requirementId=len(4), description=len=(4), applicability=len(0), steps=len(0)', but instead it was '%v'", controlEvaluationTestData[0].control.Message)
 	}
 
 }

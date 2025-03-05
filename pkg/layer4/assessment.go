@@ -54,7 +54,7 @@ func NewAssessment(requirementId string, description string, applicability []str
 		Result:         NotRun,
 		Steps:          steps,
 	}
-	err := a.precheck(applicability)
+	err := a.precheck()
 	return a, err
 }
 
@@ -72,9 +72,9 @@ func (a *Assessment) runStep(targetData interface{}, step AssessmentStep) Result
 }
 
 // Run will execute all steps, halting if any step does not return layer4.Passed
-func (a *Assessment) Run(targetData interface{}, applicability []string) Result {
+func (a *Assessment) Run(targetData interface{}) Result {
 	startTime := time.Now()
-	err := a.precheck(applicability)
+	err := a.precheck()
 	if err != nil {
 		a.Result = Unknown
 		return a.Result
@@ -90,8 +90,8 @@ func (a *Assessment) Run(targetData interface{}, applicability []string) Result 
 
 // RunTolerateFailures will execute all steps, halting only if a step
 // returns an unknown result
-func (a *Assessment) RunTolerateFailures(targetData interface{}, applicability []string) Result {
-	err := a.precheck(applicability)
+func (a *Assessment) RunTolerateFailures(targetData interface{}) Result {
+	err := a.precheck()
 	if err != nil {
 		a.Result = Unknown
 		return a.Result
@@ -132,7 +132,7 @@ func (a *Assessment) RevertChanges() (corrupted bool) {
 	return
 }
 
-func (a *Assessment) precheck(applicability []string) error {
+func (a *Assessment) precheck() error {
 	if a.Requirement_Id == "" || a.Description == "" || a.Applicability == nil || a.Steps == nil || len(a.Applicability) == 0 || len(a.Steps) == 0 {
 		message := fmt.Sprintf(
 			"expected all Assessment fields to have a value, but got: requirementId=len(%v), description=len=(%v), applicability=len(%v), steps=len(%v)",
@@ -143,9 +143,6 @@ func (a *Assessment) precheck(applicability []string) error {
 		return errors.New(message)
 	}
 
-	if !a.isApplicable(applicability) {
-		a.Result = NotApplicable
-	}
 	return nil
 }
 

@@ -97,6 +97,8 @@ var (
 
 	// Assessments
 	failingAssessment = Assessment{
+		Requirement_Id: "failingAssessment",
+		Description:    "failing assessment",
 		Steps: []AssessmentStep{
 			failingAssessmentStep,
 			passingAssessmentStep,
@@ -104,12 +106,16 @@ var (
 		Applicability: testingApplicability,
 	}
 	passingAssessment = Assessment{
+		Requirement_Id: "passingAssessment",
+		Description:    "passing assessment",
 		Steps: []AssessmentStep{
 			passingAssessmentStep,
 		},
 		Applicability: testingApplicability,
 	}
 	needsReviewAssessment = Assessment{
+		Requirement_Id: "needsReviewAssessment",
+		Description:    "needs review assessment",
 		Steps: []AssessmentStep{
 			passingAssessmentStep,
 			needsReviewAssessmentStep,
@@ -118,6 +124,8 @@ var (
 		Applicability: testingApplicability,
 	}
 	unknownAssessment = Assessment{
+		Requirement_Id: "unknownAssessment",
+		Description:    "unknown assessment",
 		Steps: []AssessmentStep{
 			passingAssessmentStep,
 			unknownAssessmentStep,
@@ -126,6 +134,8 @@ var (
 		Applicability: testingApplicability,
 	}
 	badRevertPassingAssessment = Assessment{
+		Requirement_Id: "badRevertPassingAssessment",
+		Description:    "bad revert passing assessment",
 		Changes: map[string]*Change{
 			"badRevertChange": badRevertChange,
 		},

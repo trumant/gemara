@@ -23,11 +23,15 @@ func TestResultString(t *testing.T) {
 			expected: "Needs Review",
 		},
 		{
-			result:   Unknown,
-			expected: "Unknown",
+			result:   NotRun,
+			expected: "Not Run",
 		},
 		{
-			result:   Result(4),
+			result:   NotApplicable,
+			expected: "Not Applicable",
+		},
+		{
+			result:   Unknown,
 			expected: "Unknown",
 		},
 	}
