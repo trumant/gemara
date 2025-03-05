@@ -1,6 +1,5 @@
 metadata:
   id: FINOS-CCC
-  title: FINOS Common Cloud Controls
   description: |
     FINOS CCC is an open standard project that describes consistent controls for
     compliant public cloud deployments in the financial services sector.
@@ -24,7 +23,7 @@ metadata:
       description: |
         Information is restricted to the organization.
 control-families:
-  - title: Data Protection
+  - name: Data Protection
     description: |
       Data protection controls ensure that data is protected from unauthorized
       access, disclosure, and tampering. This includes encryption of data at
