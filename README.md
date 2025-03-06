@@ -43,9 +43,11 @@ Examples include CIS Benchmarks, FINOS Common Cloud Controls, and the OSPS Basel
 
 #### Layer 2 Schema
 
-The SCI [Layer 2 Schema](./layer-2-schema.cue) provides methods for expressing Layer 2 Controls in a machine-readable format. 
+The SCI [Layer 2 Schema](./schemas/layer-2.cue) provides methods for expressing Layer 2 controls in a machine-readable format. 
 
 The schema allows controls to be mapped to threats or Layer 1 controls by their unique identifiers. Threats may also be expressed in the schema, with mappings to the technology-specific capabilities which may be vulnerable to the threat.
+
+The SCI go module provides Layer 2 support for ingesting documents that follow this schema.
 
 ### Layer 3: Policy
 
@@ -55,9 +57,17 @@ Layer 3 controls are typically developed by an organization for its own purposes
 
 ### Layer 4: Evaluation
 
-Activities in the Evaluation layer provide inspection of code, configurations, and deployments. 
+Activities in the Evaluation layer provide inspection of code, configurations, and deployments. Those elements are part of the _software development lifecycle_ which is not represented in this model.
 
 Evaluation activities may be built based on outputs from Layers 2 or 3. While automated assessments are often developed by vendors or industry groups, proper evaluation should also be able to ingest organizational policies to custom-tailor the assessment to the needs of the compliance program.
+
+#### Layer 4 Schema
+
+The SCI [Layer 4 Schema)(./schemas/layer-4.cue) provides methods for expressing Layer 4 evaluation results in a machine readable format.
+
+The schema allows evaluations to be mapped to Layer 2 controls by their unique identifiers.
+
+The SCI go module provides Layer 2 support for writing assessments that can write results in this schema.
 
 ### Layer 5: Enforcement
 
