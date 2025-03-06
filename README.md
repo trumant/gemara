@@ -63,7 +63,7 @@ Evaluation activities may be built based on outputs from Layers 2 or 3. While au
 
 #### Layer 4 Schema
 
-The SCI [Layer 4 Schema)(./schemas/layer-4.cue) provides methods for expressing Layer 4 evaluation results in a machine readable format.
+The SCI [Layer 4 Schema](./schemas/layer-4.cue) provides methods for expressing Layer 4 evaluation results in a machine readable format.
 
 The schema allows evaluations to be mapped to Layer 2 controls by their unique identifiers.
 
