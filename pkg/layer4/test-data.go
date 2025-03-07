@@ -94,6 +94,13 @@ var (
 		Description: "description placeholder",
 		applyFunc:   goodApplyFunc,
 	}
+	disallowedChange = &Change{
+		Target_Name: "disallowedChange",
+		Description: "description placeholder",
+		disallowed:  true,
+		applyFunc:   goodApplyFunc,
+		revertFunc:  goodRevertFunc,
+	}
 
 	// Assessments
 	failingAssessment = Assessment{
@@ -112,6 +119,9 @@ var (
 			passingAssessmentStep,
 		},
 		Applicability: testingApplicability,
+		Changes: map[string]*Change{
+			"pendingChange": pendingChange,
+		},
 	}
 	needsReviewAssessment = Assessment{
 		Requirement_Id: "needsReviewAssessment",

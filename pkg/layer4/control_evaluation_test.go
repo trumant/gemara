@@ -98,17 +98,40 @@ var controlEvaluationTestData = []struct {
 
 // TestEvaluate runs a series of tests on the ControlEvaluation.Evaluate method
 func TestEvaluate(t *testing.T) {
-	for _, c := range controlEvaluationTestData {
-		t.Run(c.testName, func(t *testing.T) {
+	for _, test := range controlEvaluationTestData {
+		t.Run(test.testName, func(t *testing.T) {
+			c := test.control // copy the control to avoid duplication in the next test
+			c.Evaluate(nil, testingApplicability, true)
 
-			c.control.Evaluate(nil, testingApplicability)
-
-			if c.control.Result != c.expectedResult {
-				t.Errorf("Expected Result to be %v, but it was %v", c.expectedResult, c.control.Result)
+			if c.Result != test.expectedResult {
+				t.Errorf("Expected Result to be %v, but it was %v", test.expectedResult, c.Result)
 			}
 
-			if c.control.Corrupted_State != c.expectedCorrupted {
-				t.Errorf("Expected Corrupted_State to be %v, but it was %v", c.expectedCorrupted, c.control.Corrupted_State)
+			if c.Corrupted_State != test.expectedCorrupted {
+				t.Errorf("Expected Corrupted_State to be %v, but it was %v", test.expectedCorrupted, c.Corrupted_State)
+			}
+		})
+		t.Run(test.testName+"no-changes", func(t *testing.T) {
+			c := test.control // copy the control to avoid duplication in the next test
+			c.Evaluate(nil, testingApplicability, false)
+
+			for _, assessment := range c.Assessments {
+				if assessment.Changes != nil {
+					for _, change := range assessment.Changes {
+						if change.Applied {
+							t.Errorf("Expected no changes to be applied, but they were")
+							return
+						}
+					}
+				}
+			}
+
+			if c.Result != test.expectedResult {
+				t.Errorf("Expected Result to be %v, but it was %v", test.expectedResult, c.Result)
+			}
+
+			if c.Corrupted_State != test.expectedCorrupted {
+				t.Errorf("Expected Corrupted_State to be %v, but it was %v", test.expectedCorrupted, c.Corrupted_State)
 			}
 		})
 	}

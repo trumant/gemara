@@ -18,10 +18,18 @@ type Change struct {
 	Applied       bool        // Applied is true if the change was successfully applied at least once
 	Reverted      bool        // Reverted is true if the change was successfully reverted and not applied again
 	Error         error       // Error is used if any error occurred during the change
+	disallowed    bool        // Allowed may be disabled to prevent the change from being applied
+}
+
+func (c *Change) Disallow() {
+	c.disallowed = true
 }
 
 // Apply executes the Apply function for the change
-func (c *Change) Apply() {
+func (c *Change) Apply() (apppied bool) {
+	if c.disallowed {
+		return
+	}
 	err := c.precheck()
 	if err != nil {
 		c.Error = err
@@ -29,7 +37,7 @@ func (c *Change) Apply() {
 	}
 	// Do nothing if the change has already been applied and not reverted
 	if c.Applied && !c.Reverted {
-		return
+		return true
 	}
 	obj, err := c.applyFunc()
 	if err != nil {
@@ -41,6 +49,7 @@ func (c *Change) Apply() {
 	}
 	c.Applied = true
 	c.Reverted = false
+	return true
 }
 
 // Revert executes the Revert function for the change

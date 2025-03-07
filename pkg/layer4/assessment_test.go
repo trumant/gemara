@@ -106,12 +106,29 @@ func TestRunStep(t *testing.T) {
 func TestRun(t *testing.T) {
 	for _, data := range assessmentsTestData {
 		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.Run(nil)
-			if result != data.assessment.Result {
+			a := data.assessment // copy the assessment to prevent duplicate executions in the next test
+			result := a.Run(nil, true)
+			if result != a.Result {
 				t.Errorf("expected match between Run return value (%s) and assessment Result value (%s)", result, data.expectedResult)
 			}
+			if a.Steps_Executed != data.numberOfStepsToRun {
+				t.Errorf("expected to run %d tests, got %d", data.numberOfStepsToRun, a.Steps_Executed)
+			}
+		})
+		t.Run(data.testName+"-no-changes", func(t *testing.T) {
+			data.assessment.Run(nil, false)
 			if data.assessment.Steps_Executed != data.numberOfStepsToRun {
 				t.Errorf("expected to run %d tests, got %d", data.numberOfStepsToRun, data.assessment.Steps_Executed)
+			}
+			for _, change := range data.assessment.Changes {
+				if !change.disallowed {
+					t.Errorf("expected all changes to be disallowed, but found an allowed change")
+					return
+				}
+				if change.Applied || change.Reverted {
+					t.Errorf("expected no changes to be applied, but found applied=%t, reverted=%t", change.Applied, change.Reverted)
+					return
+				}
 			}
 		})
 	}
@@ -185,6 +202,9 @@ func TestRevertChanges(t *testing.T) {
 	for _, data := range revertChangesTestData {
 		t.Run(data.testName, func(t *testing.T) {
 			for _, change := range data.assessment.Changes {
+				if change.disallowed {
+					return
+				}
 				change.Apply()
 			}
 			corrupted := data.assessment.RevertChanges()

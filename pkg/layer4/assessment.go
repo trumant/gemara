@@ -72,12 +72,19 @@ func (a *Assessment) runStep(targetData interface{}, step AssessmentStep) Result
 }
 
 // Run will execute all steps, halting if any step does not return layer4.Passed
-func (a *Assessment) Run(targetData interface{}) Result {
+// `targetData` is the data that the assessment will be run against
+// `changesAllowed` is a boolean that determines whether changes will be applied
+func (a *Assessment) Run(targetData interface{}, changesAllowed bool) Result {
 	startTime := time.Now()
 	err := a.precheck()
 	if err != nil {
 		a.Result = Unknown
 		return a.Result
+	}
+	for _, change := range a.Changes {
+		if !changesAllowed {
+			change.Disallow()
+		}
 	}
 	for _, step := range a.Steps {
 		if a.runStep(targetData, step) == Failed {

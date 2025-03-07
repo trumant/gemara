@@ -32,7 +32,8 @@ func (c *ControlEvaluation) AddAssessment(requirementId string, description stri
 // It will halt if a step returns a failed result.
 // `targetData` is the data that the assessment will be run against.
 // `userApplicability` is a slice of strings that determine when the assessment is applicable.
-func (c *ControlEvaluation) Evaluate(targetData interface{}, userApplicability []string) {
+// `changesAllowed` determines whether the assessment is allowed to execute its changes.
+func (c *ControlEvaluation) Evaluate(targetData interface{}, userApplicability []string, changesAllowed bool) {
 	if len(c.Assessments) == 0 {
 		c.Result = NeedsReview
 		return
@@ -49,7 +50,7 @@ func (c *ControlEvaluation) Evaluate(targetData interface{}, userApplicability [
 			}
 		}
 		if applicabile {
-			result := assessment.Run(targetData)
+			result := assessment.Run(targetData, changesAllowed)
 			c.Result = UpdateAggregateResult(c.Result, result)
 			c.Message = assessment.Message
 			if c.Result == Failed {
