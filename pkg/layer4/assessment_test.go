@@ -117,25 +117,6 @@ func TestRun(t *testing.T) {
 	}
 }
 
-// TestRunTolerateFailures ensures that RunTolerateFailures executes all steps, halting only if a step returns an unknown result
-func TestRunTolerateFailures(t *testing.T) {
-	for _, d := range assessmentsTestData {
-		data := d
-		t.Run(data.testName, func(t *testing.T) {
-			result := data.assessment.RunTolerateFailures(nil)
-			if result != data.assessment.Result {
-				t.Errorf("expected match between RunTolerateFailures return value (%s) and assessment Result value (%s)", result, data.expectedResult)
-			}
-			if data.assessment.Steps_Executed != data.numberOfSteps {
-				if result != Unknown {
-					t.Errorf("expected to run %d tests, got %d", data.numberOfSteps, data.assessment.Steps_Executed)
-				}
-			}
-		})
-		data = d
-	}
-}
-
 // TestNewChange ensures that NewChange creates a new Change object and adds it to the Assessment
 func TestNewChange(t *testing.T) {
 	anyOldAssessment := Assessment{}

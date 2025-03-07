@@ -88,20 +88,6 @@ func (a *Assessment) Run(targetData interface{}) Result {
 	return a.Result
 }
 
-// RunTolerateFailures will execute all steps, halting only if a step
-// returns an unknown result
-func (a *Assessment) RunTolerateFailures(targetData interface{}) Result {
-	err := a.precheck()
-	if err != nil {
-		a.Result = Unknown
-		return a.Result
-	}
-	for _, step := range a.Steps {
-		a.runStep(targetData, step)
-	}
-	return a.Result
-}
-
 // NewChange creates a new Change object and adds it to the Assessment
 func (a *Assessment) NewChange(changeName, targetName, description string, targetObject interface{}, applyFunc ApplyFunc, revertFunc RevertFunc) *Change {
 	if a.Changes == nil {
@@ -144,15 +130,4 @@ func (a *Assessment) precheck() error {
 	}
 
 	return nil
-}
-
-func (a *Assessment) isApplicable(targetApplicabilities []string) bool {
-	for _, applicability := range a.Applicability {
-		for _, targetApplicability := range targetApplicabilities {
-			if applicability == targetApplicability {
-				return true
-			}
-		}
-	}
-	return false
 }
