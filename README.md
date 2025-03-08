@@ -1,6 +1,6 @@
 # SCI: Simplified Compliance Infrastructure
 
-The _Simplified Compliance Infrastructure_ provides a model to describe the categories of compliance activities, how they interact, and the schemas to allow for interoperability between them.
+The _Simplified Compliance Infrastructure_ provides a model to describe the categories of compliance activities, how they interact, and the schemas to enable automated interoperability between them.
 
 In order to better facilitate cross-functional communication, the SCI Model seeks to outline the categorical layers of activities related to automated governance.
 
@@ -21,7 +21,7 @@ Each layer in the model builds upon the lower layer, though in higher-level use 
 | 3 | Policy | Risk-informed guidance tailored to an organization |
 | 4 | Evaluation | Inspection of code, configurations, and deployments |
 | 5 | Enforcement | Prevention or remediation based on assessment findings |
-| 6 | Audit | Monitoring, logging, and reporting on deployed resource state |
+| 6 | Audit | Review of organizational policy and conformance |
 
 ### Layer 1: Rules
 
@@ -29,7 +29,7 @@ The Rules layer is the lowest level of the SCI Model. Activities in this layer p
 
 Rules frameworks or standards occasionally express their guidance using the term "controls" — these should be understood as Layer 1 Controls in the event that the term appears to conflict with Layer 2. Rules are high-level, abstract controls that should be referenced by technology-specific Layer 2 Controls.
 
-Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GDPR, and CRA — among others.
+**Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GDPR, and CRA — among others.
 
 ### Layer 2: Controls
 
@@ -77,9 +77,9 @@ Enforcement may be built based on Layer 4 assessments. This layer ensures that t
 
 ### Layer 6: Audit
 
-Activities in the Audit layer provide monitoring, logging, and reporting on deployed resource state.
+Activities in the Audit layer provide a review of organizational policy and conformance. 
 
-Auditing may be built based on Layer 4 assessment results, informed by Layer 5 enforcement remediation activities, while considering other requirements of the organization — such as cost monitoring. This layer ensures that the organization is able to monitor the state of deployed resources and report on their compliance with the organization's policies.
+Audits consider information from all of the lower layers. These activities are typically performed by internal or external auditors to ensure that the organization has designed and enforced effective policies based on the organization's requirements.
 
 ## Tooling
 
