@@ -37,7 +37,9 @@ Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GD
 
 Activities in the Control layer produce technology-specific, threat-informed security controls. Controls are the specific guardrails that organizations put in place to protect their information systems. They are typically informed by the best practices and industry standards which are produced in Layer 1.
 
-Layer 2 Controls are typically developed by an organization for its own purposes, or for general use by industry groups, government agencies, or international standards bodies. These should be combined with organizational risk considerations to form Layer 3 controls.
+Layer 2 Controls are typically developed by an organization for its own purposes, or for general use by industry groups, government agencies, or international standards bodies. 
+
+Assets in this category may be refined into more specific Layer 2 controls, or combined with organizational risk considerations to form Layer 3 policies.
 
 The recommended process for developing Layer 2 Controls is to first assess the technology's capabilities, then identify threats to those capabilities, and finally develop controls to mitigate those threats.
 
