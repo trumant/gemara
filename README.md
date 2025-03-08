@@ -27,7 +27,9 @@ Each layer in the model builds upon the lower layer, though in higher-level use 
 
 The Guidance layer is the lowest level of the SCI Model. Activities in this layer provide high-level rules pertaining to cybersecurity measures. Guidance is typically developed by industry groups, government agencies, or international standards bodies. They are intended to be used as a starting point for organizations to develop their own cybersecurity programs.
 
-Guidance frameworks or standards occasionally express their rules using the term "controls" — these should be understood as Layer 1 Controls in the event that the term appears to conflict with Layer 2. These rules are high-level, abstract controls that should then be referenced by technology-specific Layer 2 Controls.
+Guidance frameworks or standards occasionally express their rules using the term "controls" — these should be understood as Layer 1 Controls in the event that the term appears to conflict with Layer 2. 
+
+These guidance documents are high-level, abstract controls that may be referenced in the development of other Layer 1 or Layer 2 assets.
 
 Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GDPR, and CRA.
 
