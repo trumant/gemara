@@ -16,20 +16,20 @@ Each layer in the model builds upon the lower layer, though in higher-level use 
 
 | Layer | Name | Description |
 |-------|------|-------------|
-| 1 | Rules | High-level guidance on cybersecurity measures |
+| 1 | Guidance | High-level guidance on cybersecurity measures |
 | 2 | Controls | Technology-specific, threat-informed security controls |
 | 3 | Policy | Risk-informed guidance tailored to an organization |
 | 4 | Evaluation | Inspection of code, configurations, and deployments |
 | 5 | Enforcement | Prevention or remediation based on assessment findings |
 | 6 | Audit | Review of organizational policy and conformance |
 
-### Layer 1: Rules
+### Layer 1: Guidance
 
-The Rules layer is the lowest level of the SCI Model. Activities in this layer provide high-level guidance on cybersecurity measures. Rules are typically developed by industry groups, government agencies, or international standards bodies. They are intended to be used as a starting point for organizations to develop their own cybersecurity programs.
+The Guidance layer is the lowest level of the SCI Model. Activities in this layer provide high-level rules pertaining to cybersecurity measures. Guidance is typically developed by industry groups, government agencies, or international standards bodies. They are intended to be used as a starting point for organizations to develop their own cybersecurity programs.
 
-Rules frameworks or standards occasionally express their guidance using the term "controls" — these should be understood as Layer 1 Controls in the event that the term appears to conflict with Layer 2. Rules are high-level, abstract controls that should be referenced by technology-specific Layer 2 Controls.
+Guidance frameworks or standards occasionally express their rules using the term "controls" — these should be understood as Layer 1 Controls in the event that the term appears to conflict with Layer 2. These rules are high-level, abstract controls that should then be referenced by technology-specific Layer 2 Controls.
 
-**Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GDPR, and CRA — among others.
+Examples include the NIST Cybersecurity Framework, ISO 27001, PCI DSS, HIPPA, GDPR, and CRA.
 
 ### Layer 2: Controls
 
@@ -51,7 +51,7 @@ The SCI go module provides Layer 2 support for ingesting documents that follow t
 
 ### Layer 3: Policy
 
-Activities in the Policy layer provide risk-informed governance rules tailored to an organization. Policies are the rules that organizations put in place to govern their information systems. They are typically informed by risks or based on best practices and industry standards.
+Activities in the Policy layer provide risk-informed governance rules tailored to an organization. They are typically informed by risks or based on best practices and industry standards.
 
 Layer 3 controls are typically developed by an organization for its own purposes, to compile into organizational policies. Policies cannot be properly developed without consideration for organization-specific risk appetite and risk-acceptance. These should be used as a starting point for Layer 4 assessments.
 
