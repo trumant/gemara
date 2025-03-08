@@ -57,7 +57,9 @@ The SCI go module provides Layer 2 support for ingesting documents that follow t
 
 Activities in the Policy layer provide risk-informed governance rules tailored to an organization. They are typically informed by risks or based on best practices and industry standards.
 
-Layer 3 controls are typically developed by an organization for its own purposes, to compile into organizational policies. Policies cannot be properly developed without consideration for organization-specific risk appetite and risk-acceptance. These should be used as a starting point for Layer 4 assessments.
+Layer 3 controls are typically developed by an organization for its own purposes, to compile into organizational policies. Policies cannot be properly developed without consideration for organization-specific risk appetite and risk-acceptance. 
+
+These policy documents may be referenced by other policy documents, or used as a starting point for Layer 4 assessments.
 
 ### Layer 4: Evaluation
 
