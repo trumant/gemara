@@ -7,8 +7,8 @@ type Catalog struct {
 	Threats            []Threat        `yaml:"threats"`
 	Capabilities       []Capability    `yaml:"capabilities"`
 	SharedControls     []Mapping       `yaml:"shared-controls"`
-	SharedThreats      []Threat        `yaml:"shared-threats"`
-	SharedCapabilities []Capability    `yaml:"shared-capabilities"`
+	SharedThreats      []Mapping       `yaml:"shared-threats"`
+	SharedCapabilities []Mapping       `yaml:"shared-capabilities"`
 }
 
 type Metadata struct {
