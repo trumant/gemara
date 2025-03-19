@@ -56,18 +56,9 @@ func loadJson(sourcePath string, data interface{}) error {
 func (c *Catalog) LoadControlFamilyFiles(sourcePaths []string) error {
 	for _, sourcePath := range sourcePaths {
 		catalog := &Catalog{}
-		if strings.Contains(sourcePath, ".yaml") {
-			err := loadYaml(sourcePath, catalog)
-			if err != nil {
-				return err
-			}
-		} else if strings.Contains(sourcePath, ".json") {
-			err := loadJson(sourcePath, catalog)
-			if err != nil {
-				return fmt.Errorf("error loading json: %w", err)
-			}
-		} else {
-			return fmt.Errorf("unsupported file type")
+		err := c.LoadControlFamiliesFile(sourcePath)
+		if err != nil {
+			return err
 		}
 		c.ControlFamilies = append(c.ControlFamilies, catalog.ControlFamilies...)
 	}
