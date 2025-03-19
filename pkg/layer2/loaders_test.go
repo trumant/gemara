@@ -54,11 +54,11 @@ func Test_loadYaml(t *testing.T) {
 	}
 }
 
-func Test_Catalog_LoadControlFamily(t *testing.T) {
+func Test_LoadFile(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Catalog{}
-			err := c.LoadControlFamily(tt.sourcePath)
+			err := c.LoadFile(tt.sourcePath)
 			if (err == nil) == tt.wantErr {
 				t.Errorf("Catalog.LoadControlFamily() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -69,11 +69,11 @@ func Test_Catalog_LoadControlFamily(t *testing.T) {
 	}
 }
 
-func Test_Catalog_LoadControlFamilyFiles(t *testing.T) {
+func Test_LoadFiles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Catalog{}
-			err := c.LoadControlFamilyFiles([]string{tt.sourcePath})
+			err := c.LoadFiles([]string{tt.sourcePath})
 			if (err == nil) == tt.wantErr {
 				t.Errorf("Catalog.LoadControlFamilyFiles() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -84,33 +84,10 @@ func Test_Catalog_LoadControlFamilyFiles(t *testing.T) {
 	}
 }
 
-func Test_Catalog_LoadControlFamiliesFile(t *testing.T) {
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := &Catalog{}
-			err := c.LoadControlFamiliesFile(tt.sourcePath)
-			if (err == nil) == tt.wantErr {
-				t.Errorf("Catalog.LoadControlFamiliesFile() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if !tt.wantErr && len(c.ControlFamilies) == 0 {
-				t.Errorf("Catalog.LoadControlFamiliesFile() did not load any control families")
-			}
-		})
-	}
-}
-
 func Test_loadYamlFromURL(t *testing.T) {
 	// Placeholder test
 }
 
 func Test_loadJson(t *testing.T) {
-	// Placeholder test
-}
-
-func Test_Catalog_LoadThreat(t *testing.T) {
-	// Placeholder test
-}
-
-func Test_Catalog_LoadCapability(t *testing.T) {
 	// Placeholder test
 }
