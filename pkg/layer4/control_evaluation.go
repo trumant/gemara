@@ -40,16 +40,16 @@ func (c *ControlEvaluation) Evaluate(targetData interface{}, userApplicability [
 	}
 	c.closeHandler()
 	for _, assessment := range c.Assessments {
-		var applicabile bool
+		var applicable bool
 		for _, aa := range assessment.Applicability {
 			for _, ua := range userApplicability {
 				if aa == ua {
-					applicabile = true
+					applicable = true
 					break
 				}
 			}
 		}
-		if applicabile {
+		if applicable {
 			result := assessment.Run(targetData, changesAllowed)
 			c.Result = UpdateAggregateResult(c.Result, result)
 			c.Message = assessment.Message
