@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type ApplyFunc func() (interface{}, error)
+type ApplyFunc func(string, interface{}) (interface{}, error)
 type RevertFunc func() error
 
 // Change is a struct that contains the data and functions associated with a single change to a target resource.
@@ -39,7 +39,7 @@ func (c *Change) Apply() (apppied bool) {
 	if c.Applied && !c.Reverted {
 		return true
 	}
-	obj, err := c.applyFunc()
+	obj, err := c.applyFunc(c.Target_Name, c.Target_Object)
 	if err != nil {
 		c.Error = err
 		return
