@@ -18,16 +18,16 @@ type Change struct {
 	Applied       bool        // Applied is true if the change was successfully applied at least once
 	Reverted      bool        // Reverted is true if the change was successfully reverted and not applied again
 	Error         error       // Error is used if any error occurred during the change
-	disallowed    bool        // Allowed may be disabled to prevent the change from being applied
+	Allowed    bool        // Allowed may be disabled to prevent the change from being applied
 }
 
 func (c *Change) Disallow() {
-	c.disallowed = true
+	c.Allowed = false
 }
 
 // Apply executes the Apply function for the change
 func (c *Change) Apply() (apppied bool) {
-	if c.disallowed {
+	if !c.Allowed {
 		return
 	}
 	err := c.precheck()
