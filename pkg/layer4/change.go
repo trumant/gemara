@@ -5,7 +5,7 @@ import (
 )
 
 type ApplyFunc func(string, interface{}) (interface{}, error)
-type RevertFunc func() error
+type RevertFunc func(interface{}) error
 
 // Change is a struct that contains the data and functions associated with a single change to a target resource.
 type Change struct {
@@ -53,7 +53,7 @@ func (c *Change) Apply(data interface{}) (apppied bool) {
 }
 
 // Revert executes the Revert function for the change
-func (c *Change) Revert() {
+func (c *Change) Revert(data interface{}) {
 	err := c.precheck()
 	if err != nil {
 		c.Error = err
@@ -63,7 +63,7 @@ func (c *Change) Revert() {
 	if !c.Applied {
 		return
 	}
-	err = c.revertFunc()
+	err = c.revertFunc(data)
 	if err != nil {
 		c.Error = err
 		return
