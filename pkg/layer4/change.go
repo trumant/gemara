@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type ApplyFunc func(string, interface{}) (interface{}, error)
+type ApplyFunc func(interface{}) (interface{}, error)
 type RevertFunc func(interface{}) error
 
 // Change is a struct that contains the data and functions associated with a single change to a target resource.
@@ -26,7 +26,7 @@ func (c *Change) Disallow() {
 }
 
 // Apply executes the Apply function for the change
-func (c *Change) Apply(data interface{}) (apppied bool) {
+func (c *Change) Apply(targetName string, targetObject interface{}, changeInput interface{}) (applied bool, changeOutput interface{}) {
 	if !c.Allowed {
 		return
 	}
@@ -37,19 +37,18 @@ func (c *Change) Apply(data interface{}) (apppied bool) {
 	}
 	// Do nothing if the change has already been applied and not reverted
 	if c.Applied && !c.Reverted {
-		return true
+		return true, nil
 	}
-	obj, err := c.applyFunc(c.Target_Name, data)
+	c.Target_Name = targetName
+	c.Target_Object = targetObject
+	changeOutput, err = c.applyFunc(changeInput)
 	if err != nil {
 		c.Error = err
 		return
 	}
-	if obj != nil {
-		c.Target_Object = obj
-	}
 	c.Applied = true
 	c.Reverted = false
-	return true
+	return true, changeOutput
 }
 
 // Revert executes the Revert function for the change
