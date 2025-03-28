@@ -40,7 +40,7 @@ func TestApply(t *testing.T) {
 	for _, test := range changesTestData {
 		t.Run(test.testName, func(t *testing.T) {
 
-			test.change.Apply()
+			test.change.Apply("target_name", "target_object", "change_input")
 
 			if test.change.applyFunc == nil && test.change.Error == nil {
 				t.Errorf("Expected error to be set due to nil applyFunc, but it was not")
@@ -49,16 +49,16 @@ func TestApply(t *testing.T) {
 				t.Errorf("Expected error to be set due to nil revertFunc, but it was not")
 			}
 			if test.change.applyFunc != nil && test.change.revertFunc != nil {
-				if !test.change.disallowed && !test.change.Applied {
+				if test.change.Allowed && !test.change.Applied {
 					t.Errorf("Expected change to be applied, but it was not")
-				} else if test.change.disallowed && test.change.Applied {
+				} else if !test.change.Allowed && test.change.Applied {
 					t.Errorf("Expected change to not be applied, but it was")
 				}
 
-				test.change.Revert()
+				test.change.Revert("revert_change_input")
 
-				if !test.change.disallowed && !test.change.Applied {
-					t.Errorf("Reverting shound not erase the record that the change was applied")
+				if test.change.Allowed && !test.change.Applied {
+					t.Errorf("Reverting should not erase the record that the change was applied")
 				}
 			}
 		})
@@ -73,10 +73,10 @@ func TestDisallow(t *testing.T) {
 			}
 			test.change.Disallow()
 
-			if !test.change.disallowed {
+			if test.change.Allowed {
 				t.Errorf("Expected change to be disallowed, but it was not")
 			}
-			test.change.Apply()
+			test.change.Apply("target_name", "target_object", "change_input")
 
 			if test.change.Applied {
 				t.Errorf("Expected change to not be applied, but it was")
@@ -89,7 +89,7 @@ func TestRevert(t *testing.T) {
 	for _, test := range changesTestData {
 		t.Run(test.testName, func(t *testing.T) {
 
-			test.change.Revert()
+			test.change.Revert("revert_change_input")
 
 			if test.change.applyFunc == nil && test.change.Error == nil {
 				t.Errorf("Expected error to be set due to nil applyFunc, but it was not")
@@ -104,10 +104,10 @@ func TestRevert(t *testing.T) {
 				if !test.change.Applied && test.change.Reverted {
 					t.Errorf("Reverting should not be recorded if a change was not applied to revert")
 				}
-				test.change.Apply()
+				test.change.Apply("target_name", "target_object", "change_input")
 
 				if test.change.Reverted {
-					t.Errorf("Applying further times shound mark the change as not reverted")
+					t.Errorf("Applying further times should mark the change as not reverted")
 				}
 			}
 

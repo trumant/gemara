@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-// ControlEvaluation is a struct that contains all assessment results, organinzed by name
+// ControlEvaluation is a struct that contains all assessment results, organized by name
 type ControlEvaluation struct {
 	Name              string        // TestSuiteName is the human-readable name or description of the control evaluation
 	Control_Id        string        // Control_Id is the unique identifier for the control being evaluated

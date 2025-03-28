@@ -106,6 +106,7 @@ func (a *Assessment) NewChange(changeName, targetName, description string, targe
 		Description:   description,
 		applyFunc:     applyFunc,
 		revertFunc:    revertFunc,
+		Allowed:       true,
 	}
 
 	return a.Changes[changeName]
@@ -115,7 +116,7 @@ func (a *Assessment) RevertChanges() (corrupted bool) {
 	for _, change := range a.Changes {
 		if !corrupted && (change.Applied || change.Error != nil) {
 			if !change.Reverted {
-				change.Revert()
+				change.Revert(nil)
 			}
 			if change.Error != nil || !change.Reverted {
 				corrupted = true // do not break loop here; continue attempting to revert all changes
