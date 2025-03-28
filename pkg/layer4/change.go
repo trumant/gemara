@@ -43,8 +43,7 @@ func (c *Change) Apply(targetName string, targetObject interface{}, changeInput 
 	c.Target_Object = targetObject
 	changeOutput, err = c.applyFunc(changeInput)
 	if err != nil {
-		c.Error = err
-		return
+		return false, changeOutput
 	}
 	c.Applied = true
 	c.Reverted = false

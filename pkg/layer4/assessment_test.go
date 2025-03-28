@@ -121,7 +121,7 @@ func TestRun(t *testing.T) {
 				t.Errorf("expected to run %d tests, got %d", data.numberOfStepsToRun, data.assessment.Steps_Executed)
 			}
 			for _, change := range data.assessment.Changes {
-				if !change.disallowed {
+				if change.Allowed {
 					t.Errorf("expected all changes to be disallowed, but found an allowed change")
 					return
 				}
@@ -202,10 +202,10 @@ func TestRevertChanges(t *testing.T) {
 	for _, data := range revertChangesTestData {
 		t.Run(data.testName, func(t *testing.T) {
 			for _, change := range data.assessment.Changes {
-				if change.disallowed {
+				if !change.Allowed {
 					return
 				}
-				change.Apply()
+				change.Apply("target_name", "target_object", "change_input")
 			}
 			corrupted := data.assessment.RevertChanges()
 			if corrupted != data.corrupted {

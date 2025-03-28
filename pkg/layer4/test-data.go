@@ -9,16 +9,16 @@ var (
 	testingApplicability = []string{"test-applicability"}
 
 	// Functions
-	goodApplyFunc = func() (interface{}, error) {
+	goodApplyFunc = func(interface{}) (interface{}, error) {
 		return nil, nil
 	}
-	goodRevertFunc = func() error {
+	goodRevertFunc = func(interface{}) error {
 		return nil
 	}
-	badApplyFunc = func() (interface{}, error) {
+	badApplyFunc = func(interface{}) (interface{}, error) {
 		return nil, errors.New("error")
 	}
-	badRevertFunc = func() error {
+	badRevertFunc = func(interface{}) error {
 		return errors.New("error")
 	}
 
@@ -97,7 +97,7 @@ var (
 	disallowedChange = &Change{
 		Target_Name: "disallowedChange",
 		Description: "description placeholder",
-		disallowed:  true,
+		Allowed:     false,
 		applyFunc:   goodApplyFunc,
 		revertFunc:  goodRevertFunc,
 	}
