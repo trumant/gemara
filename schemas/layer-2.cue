@@ -2,14 +2,14 @@ package schemas
 
 #Layer2: {
     metadata?: #Metadata
-
-    "control-families"?: [...#ControlFamily]
+    // TODO: replace multiple `@go(-)` when https://github.com/cue-lang/cue/commit/93c1421c23ac8d5ddc8910a9186f5b94e5252ea9 releases in cue > v0.12.1
+    "control-families"?: [...#ControlFamily] @go(-)
     threats?: [...#Threat]
     capabilities?: [...#Capability]
 
-    "shared-controls"?: [...#Mapping]
-    "shared-threats"?: [...#Mapping]
-    "shared-capabilities"?: [...#Mapping]
+    "shared-controls"?: [...#Mapping] @go(-)
+    "shared-threats"?: [...#Mapping] @go(-)
+    "shared-capabilities"?: [...#Mapping] @go(-)
 }
 
 // Resuable types //
@@ -19,9 +19,9 @@ package schemas
     title: string
     description: string
     version?: string
-    "last-modified"?: string
-    "applicability-categories"?: [...#Category]
-    "mapping-references"?: [...#MappingReference]
+    "last-modified"?: string @go(-)
+    "applicability-categories"?: [...#Category] @go(-)
+    "mapping-references"?: [...#MappingReference] @go(-)
 }
 
 #Category: {
@@ -40,10 +40,10 @@ package schemas
     id: string
     title: string
     objective: string
-    "assessment-requirements": [...#AssessmentRequirement]
+    "assessment-requirements": [...#AssessmentRequirement] @go(-)
 
-    "guideline-mappings"?: [...#Mapping]
-    "threat-mappings"?: [...#Mapping]
+    "guideline-mappings"?: [...#Mapping] @go(-)
+    "threat-mappings"?: [...#Mapping] @go(-)
 }
 
 #Threat: {
@@ -52,7 +52,7 @@ package schemas
     description: string
     capabilities: [...#Mapping]
 
-    "external-mappings"?: [...#Mapping]
+    "external-mappings"?: [...#Mapping] @go(-)
 }
 
 #Capability: {
@@ -70,7 +70,7 @@ package schemas
 }
 
 #Mapping: {
-    "reference-id": string
+    "reference-id": string @go(-)
     identifiers: [...string]
 }
 

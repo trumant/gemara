@@ -75,4 +75,13 @@ lintexamples:
 	@echo "  >  Linting schemas/example_evaluation_results ..."
 	@cue vet schemas/layer-4.cue schemas/example_evaluation_results.yml -d '#Layer4'
 
+cuegen:
+	@echo "  >  Generating types from cue schema ..."
+	@echo "  >  Generating types for layer2 ..."
+	@cue exp gengotypes ./schemas/layer-2.cue
+	@mv cue_types_gen.go pkg/layer2/generated_types.go
+	@echo "  >  Generating types for layer4 ..."
+	@cue exp gengotypes ./schemas/layer-4.cue
+	@mv cue_types_gen.go pkg/layer4/generated_types.go
+
 PHONY: lintcue lintexamples
