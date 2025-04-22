@@ -13,8 +13,6 @@ package schemas
     "shared-capabilities"?: [...#Mapping] @go(SharedCapabilities)
 }
 
-// Resuable types //
-
 #Metadata: {
     id: string
     title: string

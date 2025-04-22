@@ -1,6 +1,8 @@
 package schemas
 
+
 import "time"
+@go(layer4)
 
 #Layer4: {
     // ID of the Layer 2 Catalog being evaluated in this evaluation
