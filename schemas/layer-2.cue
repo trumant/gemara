@@ -2,8 +2,7 @@ package schemas
 
 #Layer2: {
     metadata?: #Metadata
-    // TODO: replace multiple `@go(-)` when https://github.com/cue-lang/cue/commit/93c1421c23ac8d5ddc8910a9186f5b94e5252ea9 releases in cue > v0.12.1
-    "control-families"?: [...#ControlFamily] @go(-)
+    control_families?: [...#ControlFamily] @go(ControlFamilies)
     threats?: [...#Threat]
     capabilities?: [...#Capability]
 
@@ -11,8 +10,6 @@ package schemas
     "shared-threats"?: [...#Mapping] @go(-)
     "shared-capabilities"?: [...#Mapping] @go(-)
 }
-
-// Resuable types //
 
 #Metadata: {
     id: string
@@ -40,7 +37,7 @@ package schemas
     id: string
     title: string
     objective: string
-    "assessment-requirements": [...#AssessmentRequirement] @go(-)
+    requirements: [...#AssessmentRequirement]
 
     "guideline-mappings"?: [...#Mapping] @go(-)
     "threat-mappings"?: [...#Mapping] @go(-)
@@ -51,8 +48,7 @@ package schemas
     title: string
     description: string
     capabilities: [...#Mapping]
-
-    "external-mappings"?: [...#Mapping] @go(-)
+    mappings?: [...#Mapping]
 }
 
 #Capability: {
