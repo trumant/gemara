@@ -70,12 +70,6 @@ lintcue:
 	@echo "  >  Linting layer-4.cue ..."
 	@cue eval ./schemas/layer-4.cue --all-errors --verbose
 
-cuegen:
-	@echo "  >  Generating types from cue schema ..."
-	@echo "  >  Generating types for layer2 ..."
-	@cue exp gengotypes ./schemas/layer-2.cue
-	@mv cue_types_gen.go layer2/generated_types.go
-
 dirtycheck:
 	@echo "  >  Checking for uncommitted changes ..."
 	@if [ -n "$$(git status --porcelain)" ]; then \
@@ -86,10 +80,18 @@ dirtycheck:
 		echo "  >  No uncommitted changes to generated files found."; \
 	fi
 
-PHONY: lintcue cuegen dirtycheck
 lintexamples:
 	@echo "  >  Linting example files ..."
 	@echo "  >  Linting schemas/example_evaluation_results ..."
 	@cue vet schemas/layer-4.cue schemas/example_evaluation_results.yml -d '#Layer4'
 
-PHONY: dirtycheck lintcue lintexamples
+cuegen:
+	@echo "  >  Generating types from cue schema ..."
+	@echo "  >  Generating types for layer2 ..."
+	@cue exp gengotypes ./schemas/layer-2.cue
+	@mv cue_types_gen.go pkg/layer2/generated_types.go
+	@echo "  >  Generating types for layer4 ..."
+	@cue exp gengotypes ./schemas/layer-4.cue
+	@mv cue_types_gen.go pkg/layer4/generated_types.go
+
+PHONY: cuegen dirtycheck lintcue lintexamples
