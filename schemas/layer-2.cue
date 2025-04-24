@@ -5,10 +5,9 @@ package schemas
     control_families?: [...#ControlFamily] @go(ControlFamilies)
     threats?: [...#Threat]
     capabilities?: [...#Capability]
-
-    "shared-controls"?: [...#Mapping] @go(-)
-    "shared-threats"?: [...#Mapping] @go(-)
-    "shared-capabilities"?: [...#Mapping] @go(-)
+    shared_controls?: [...#Mapping] @go(SharedControls)
+    shared_threats?: [...#Mapping] @go(SharedThreats)
+    shared_capabilities?: [...#Mapping] @go(SharedCapabilities)
 }
 
 #Metadata: {
@@ -16,9 +15,9 @@ package schemas
     title: string
     description: string
     version?: string
-    "last-modified"?: string @go(-)
-    "applicability-categories"?: [...#Category] @go(-)
-    "mapping-references"?: [...#MappingReference] @go(-)
+    last_modified?: string @go(LastModified)
+    applicability_categories?: [...#Category] @go(ApplicabilityCategories)
+    mapping_references?: [...#MappingReference] @go(MappingReferences)
 }
 
 #Category: {
@@ -37,10 +36,9 @@ package schemas
     id: string
     title: string
     objective: string
-    requirements: [...#AssessmentRequirement]
-
-    "guideline-mappings"?: [...#Mapping] @go(-)
-    "threat-mappings"?: [...#Mapping] @go(-)
+    assessment_requirements: [...#AssessmentRequirement] @go(AssessmentRequirements)
+    guideline_mappings?: [...#Mapping] @go(GuidelineMappings)
+    threat_mappings?: [...#Mapping] @go(ThreatMappings)
 }
 
 #Threat: {
@@ -66,7 +64,7 @@ package schemas
 }
 
 #Mapping: {
-    "reference-id": string @go(-)
+    reference_id: string @go(ReferenceID)
     identifiers: [...string]
 }
 

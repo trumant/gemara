@@ -11,14 +11,14 @@ release: tidy test release-nix release-win release-mac
 define build
 echo "  >  Building binary ..."; \
 cd $(1); \
-go build -o ../../$(1) -ldflags="$(BUILD_FLAGS)";
+go build -o ../dist/$(1) -ldflags="$(BUILD_FLAGS)";
 endef
 
 define test
 echo "  >  Validating code ..."
 cd $(1); \
 go vet ./...
-go test ./...
+go test -v ./...
 endef
 
 build:
@@ -37,7 +37,6 @@ test-cov:
 	@echo "Running tests and generating coverage output ..."
 	@go test ./... -coverprofile coverage.out -covermode count
 	@sleep 2 # Sleeping to allow for coverage.out file to get generated
-	@echo "Current test coverage : $(shell go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+') %"
 
 release-candidate: tidy test
 	@echo "  >  Building release candidate for Linux..."
@@ -79,9 +78,36 @@ cuegen:
 	@echo "  >  Generating types from cue schema ..."
 	@echo "  >  Generating types for layer2 ..."
 	@cue exp gengotypes ./schemas/layer-2.cue
-	@mv cue_types_gen.go pkg/layer2/generated_types.go
+	@mv cue_types_gen.go layer2/generated_types.go
 	@echo "  >  Generating types for layer4 ..."
 	@cue exp gengotypes ./schemas/layer-4.cue
+<<<<<<< HEAD
 	@mv cue_types_gen.go pkg/layer4/generated_types.go
 
 PHONY: lintcue lintexamples
+=======
+	@mv cue_types_gen.go layer4/generated_types.go
+
+dirtycheck:
+	@echo "  >  Checking for uncommitted changes ..."
+	@if [ -n "$$(git status --porcelain)" ]; then \
+		echo "  >  Uncommitted changes to generated files found!"; \
+		echo "  >  Run make cuegen and commit the results."; \
+		exit 1; \
+	else \
+		echo "  >  No uncommitted changes to generated files found."; \
+	fi
+
+covcheck: test-cov
+	@COVERAGE=$(shell go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'); \
+	THRESHOLD=85.0; \
+	echo "Test coverage: $$COVERAGE%"; \
+	echo "Coverage threshold: $$THRESHOLD%"; \
+	if [ $$(echo "$$COVERAGE < $$THRESHOLD" | bc) -gt 0 ]; then \
+		echo "WARNING: Test coverage ($$COVERAGE%) is below the threshold ($$THRESHOLD%)!"; \
+		exit 1; \
+	else \
+		echo "Test coverage ($$COVERAGE%) exceeds the threshold ($$THRESHOLD%)."; \
+		exit 0; \
+	fi
+>>>>>>> 8c33c58 (passing tests)

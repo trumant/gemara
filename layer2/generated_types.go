@@ -11,6 +11,12 @@ type Catalog struct {
 	Threats []Threat `json:"threats,omitempty"`
 
 	Capabilities []Capability `json:"capabilities,omitempty"`
+
+	SharedControls []Mapping `json:"shared_controls,omitempty"`
+
+	SharedThreats []Mapping `json:"shared_threats,omitempty"`
+
+	SharedCapabilities []Mapping `json:"shared_capabilities,omitempty"`
 }
 
 type Metadata struct {
@@ -21,6 +27,12 @@ type Metadata struct {
 	Description string `json:"description"`
 
 	Version string `json:"version,omitempty"`
+
+	LastModified string `json:"last_modified,omitempty"`
+
+	ApplicabilityCategories []Category `json:"applicability_categories,omitempty"`
+
+	MappingReferences []MappingReference `json:"mapping_references,omitempty"`
 }
 
 type Category struct {
@@ -46,7 +58,11 @@ type Control struct {
 
 	Objective string `json:"objective"`
 
-	Requirements []AssessmentRequirement `json:"requirements"`
+	AssessmentRequirements []AssessmentRequirement `json:"assessment_requirements"`
+
+	GuidelineMappings []Mapping `json:"guideline_mappings,omitempty"`
+
+	ThreatMappings []Mapping `json:"threat_mappings,omitempty"`
 }
 
 type Threat struct {
@@ -82,6 +98,8 @@ type MappingReference struct {
 }
 
 type Mapping struct {
+	ReferenceID string `json:"reference_id"`
+
 	Identifiers []string `json:"identifiers"`
 }
 

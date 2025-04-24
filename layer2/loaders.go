@@ -60,7 +60,7 @@ func loadYaml(sourcePath string, data *Catalog) error {
 // sourcePath is a URL or local path to a file.
 // data is a pointer to the recieving object.
 func loadJson(sourcePath string, data *Catalog) error {
-	return fmt.Errorf("loadJson not implemented [%s, %s]", sourcePath, data)
+	return fmt.Errorf("loadJson not implemented [%s, %v]", sourcePath, data)
 }
 
 // LoadControlFamiliesFile loads data from any number of YAML
