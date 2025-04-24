@@ -11,14 +11,14 @@ release: tidy test release-nix release-win release-mac
 define build
 echo "  >  Building binary ..."; \
 cd $(1); \
-go build -o ../../$(1) -ldflags="$(BUILD_FLAGS)";
+go build -o ../dist/$(1) -ldflags="$(BUILD_FLAGS)";
 endef
 
 define test
 echo "  >  Validating code ..."
 cd $(1); \
 go vet ./...
-go test ./...
+go test -v ./...
 endef
 
 build:
@@ -37,7 +37,6 @@ test-cov:
 	@echo "Running tests and generating coverage output ..."
 	@go test ./... -coverprofile coverage.out -covermode count
 	@sleep 2 # Sleeping to allow for coverage.out file to get generated
-	@echo "Current test coverage : $(shell go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+') %"
 
 release-candidate: tidy test
 	@echo "  >  Building release candidate for Linux..."
@@ -94,4 +93,17 @@ cuegen:
 	@cue exp gengotypes ./schemas/layer-4.cue
 	@mv cue_types_gen.go layer4/generated_types.go
 
-PHONY: cuegen dirtycheck lintcue lintexamples
+covcheck: test-cov
+	@COVERAGE=$(shell go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'); \
+	THRESHOLD=85.0; \
+	echo "Test coverage: $$COVERAGE%"; \
+	echo "Coverage threshold: $$THRESHOLD%"; \
+	if [ $$(echo "$$COVERAGE < $$THRESHOLD" | bc) -gt 0 ]; then \
+		echo "WARNING: Test coverage ($$COVERAGE%) is below the threshold ($$THRESHOLD%)!"; \
+		exit 1; \
+	else \
+		echo "Test coverage ($$COVERAGE%) exceeds the threshold ($$THRESHOLD%)."; \
+		exit 0; \
+	fi
+
+PHONY: covcheck cuegen dirtycheck lintcue lintexamples

@@ -45,12 +45,6 @@ type Assessment struct {
 	Methods []AssessmentMethod `json:"methods"`
 }
 
-// AssessmentMethod describes the method used to assess the layer 2 control requirement referenced by requirementID.
-//
-// See https://cuelang.org/docs/tour/types/sumstruct/
-type AssessmentMethod struct {
-}
-
 // AssessmentResult describes the result of the assessment of a layer 2 control requirement.
 type AssessmentResult struct {
 	// status describes what happened when the assessment method was run

@@ -1,5 +1,7 @@
 metadata:
   id: FINOS-CCC
+  title: FINOS Cloud Controls Catalog
+  version: 1.0.0
   description: |
     FINOS CCC is an open standard project that describes consistent controls for
     compliant public cloud deployments in the financial services sector.
