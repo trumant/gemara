@@ -87,3 +87,9 @@ dirtycheck:
 	fi
 
 PHONY: lintcue cuegen dirtycheck
+lintexamples:
+	@echo "  >  Linting example files ..."
+	@echo "  >  Linting schemas/example_evaluation_results ..."
+	@cue vet schemas/layer-4.cue schemas/example_evaluation_results.yml -d '#Layer4'
+
+PHONY: dirtycheck lintcue lintexamples
