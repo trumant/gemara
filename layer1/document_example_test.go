@@ -102,23 +102,44 @@ func ExampleGuidanceDocument() {
 						GuidelineMappings: []Mapping{
 							{
 								ReferenceId: "NIST-800-53",
-								Identifiers: []string{
-									"CA-7",
-									"IR-6",
-									"PM-26",
-									"RA-5",
-									"SI-2",
-									"SI-4",
-									"AT-2",
-									"CA-2",
+								Entries: []MappingEntry{
+									{
+										ReferenceId: "CA-7",
+										Strength:    7,
+										Remarks:     "This control is closely related to CA-7.",
+									},
+									{
+										ReferenceId: "IR-6",
+										Strength:    5,
+										Remarks:     "This control has some relevance to IR-6.",
+									},
+									{
+										ReferenceId: "PM-26",
+										Strength:    3,
+										Remarks:     "This control is loosely related to PM-26.",
+									},
+									{
+										ReferenceId: "RA-5",
+										Strength:    7,
+										Remarks:     "This control is closely related to RA-5.",
+									},
+									{
+										ReferenceId: "SI-2",
+										Strength:    5,
+										Remarks:     "This control has some relevance to SI-2.",
+									},
 								},
 							},
 						},
 						PrincipleMappings: []Mapping{
 							{
 								ReferenceId: "AIR-PRIN",
-								Identifiers: []string{
-									"TIMELINESS",
+								Entries: []MappingEntry{
+									{
+										ReferenceId: "TIMELINESS",
+										Strength:    7,
+										Remarks:     "This principle emphasizes the importance of timely feedback.",
+									},
 								},
 							},
 						},
