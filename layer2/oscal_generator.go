@@ -6,6 +6,8 @@ import (
 	"time"
 
 	oscal "github.com/defenseunicorns/go-oscal/src/types/oscal-1-1-3"
+
+	oscalUtils "github.com/ossf/gemara/internal/oscal_exporter"
 )
 
 // ToOSCAL converts a Catalog to OSCAL Catalog format.
@@ -13,26 +15,20 @@ import (
 // - uuid.NewUUID() for random UUIDs in production
 // - uuid.NewUUIDWithSource() for deterministic UUIDs in testing
 func (c *Catalog) ToOSCAL(controlFamilyIDs map[string]string,
-	version, controlHREF, catalogUUID, namespace string) (oscal.Catalog, error) {
+	version, controlHREF, catalogUUID string) (oscal.Catalog, error) {
 	now := time.Now()
-	lastModified := now
-	if c.Metadata.LastModified != "" {
-		if parsedTime, err := time.Parse(time.RFC3339, c.Metadata.LastModified); err == nil {
-			lastModified = parsedTime
-		}
-	}
 	oscalCatalog := oscal.Catalog{
 		UUID:   catalogUUID,
 		Groups: nil,
 		Metadata: oscal.Metadata{
-			LastModified: lastModified,
+			LastModified: oscalUtils.GetTimeWithFallback(c.Metadata.LastModified, now),
 			Links: &[]oscal.Link{
 				{
 					Href: fmt.Sprintf(controlHREF, version, ""),
 					Rel:  "canonical",
 				},
 			},
-			OscalVersion: "1.1.3",
+			OscalVersion: oscalUtils.OSCALVersion,
 			Published:    &now,
 			Title:        c.Metadata.Title,
 			Version:      version,
@@ -62,7 +58,7 @@ func (c *Catalog) ToOSCAL(controlFamilyIDs map[string]string,
 						{
 							ID:    ar.Id + ".R",
 							Name:  "recommendation",
-							Ns:    namespace,
+							Ns:    oscalUtils.GemaraNamespace,
 							Prose: ar.Recommendation,
 							Links: &[]oscal.Link{
 								{

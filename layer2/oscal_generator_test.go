@@ -3,8 +3,10 @@ package layer2
 import (
 	"testing"
 
-	"github.com/defenseunicorns/go-oscal/src/pkg/validation"
+	oscal "github.com/defenseunicorns/go-oscal/src/types/oscal-1-1-3"
 	"github.com/stretchr/testify/assert"
+
+	oscalUtils "github.com/ossf/gemara/internal/oscal_exporter"
 )
 
 var TestCases = []struct {
@@ -14,7 +16,6 @@ var TestCases = []struct {
 	version          string
 	controlHREF      string
 	catalogUUID      string
-	namespace        string
 	wantErr          bool
 	expectedTitle    string
 }{
@@ -51,7 +52,6 @@ var TestCases = []struct {
 		version:       "devel",
 		controlHREF:   "https://baseline.openssf.org/versions/%s#%s",
 		catalogUUID:   "8c222a23-fc7e-4ad8-b6dd-289014f07a9f",
-		namespace:     "http://baseline.openssf.org/ns/oscal",
 		wantErr:       false,
 		expectedTitle: "Test Catalog",
 	},
@@ -106,7 +106,6 @@ var TestCases = []struct {
 		version:       "devel",
 		controlHREF:   "https://baseline.openssf.org/versions/%s#%s",
 		catalogUUID:   "8c222a23-fc7e-4ad8-b6dd-289014f07a9f",
-		namespace:     "http://baseline.openssf.org/ns/oscal",
 		wantErr:       false,
 		expectedTitle: "Test Catalog Multiple",
 	},
@@ -120,7 +119,6 @@ func Test_toOSCAL(t *testing.T) {
 				tt.version,
 				tt.controlHREF,
 				tt.catalogUUID,
-				tt.namespace,
 			)
 
 			if (err == nil) == tt.wantErr {
@@ -133,22 +131,13 @@ func Test_toOSCAL(t *testing.T) {
 			}
 			// Wrap oscal catalog
 			// Create the proper OSCAL document structure
-			oscalDocument := map[string]interface{}{
-				"catalog": oscalCatalog,
+			oscalDocument := oscal.OscalModels{
+				Catalog: &oscalCatalog,
 			}
 
 			// Create validation for the OSCAL catalog
-			validator, err := validation.NewValidator(oscalDocument)
-			if err != nil {
-				t.Errorf("Failed to create validator: %v", err)
-				return
-			}
-			// Validate the OSCAL document
-			err = validator.Validate()
-			if err != nil {
-				t.Errorf("OSCAL validation failed: %v", err)
-				return
-			}
+			assert.NoError(t, oscalUtils.Validate(oscalDocument))
+
 			// Compare each field
 			assert.Equal(t, tt.catalogUUID, oscalCatalog.UUID)
 			assert.Equal(t, tt.expectedTitle, oscalCatalog.Metadata.Title)
