@@ -109,7 +109,7 @@ func createMetadata(guidance *GuidanceDocument) (oscalTypes.Metadata, error) {
 	}
 
 	if guidance.Metadata.PublicationDate != "" {
-		published, err := time.Parse(time.DateTime, guidance.Metadata.PublicationDate)
+		published, err := time.Parse(time.RFC3339, guidance.Metadata.PublicationDate)
 		if err != nil {
 			return oscalTypes.Metadata{}, err
 		}
@@ -119,7 +119,7 @@ func createMetadata(guidance *GuidanceDocument) (oscalTypes.Metadata, error) {
 	var err error
 	lastModified := time.Now()
 	if guidance.Metadata.LastModified != "" {
-		lastModified, err = time.Parse(time.DateTime, guidance.Metadata.LastModified)
+		lastModified, err = time.Parse(time.RFC3339, guidance.Metadata.LastModified)
 		if err != nil {
 			return oscalTypes.Metadata{}, err
 		}

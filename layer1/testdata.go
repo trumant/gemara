@@ -30,7 +30,7 @@ func goodAIGFExample() GuidanceDocument {
 					"financial-services",
 				},
 			},
-			LastModified: time.Now().Format(time.DateTime),
+			LastModified: time.Now().Format(time.RFC3339),
 		},
 		FrontMatter: "The following framework has been developed by FINOS (Fintech Open Source Foundation).",
 		Categories: []Category{
