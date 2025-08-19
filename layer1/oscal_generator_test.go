@@ -3,10 +3,11 @@ package layer1
 import (
 	"testing"
 
-	oscalValidation "github.com/defenseunicorns/go-oscal/src/pkg/validation"
 	oscalTypes "github.com/defenseunicorns/go-oscal/src/types/oscal-1-1-3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	oscalUtils "github.com/ossf/gemara/internal/oscal_exporter"
 )
 
 func TestToOSCALCatalog(t *testing.T) {
@@ -14,7 +15,7 @@ func TestToOSCALCatalog(t *testing.T) {
 		name       string
 		guidance   GuidanceDocument
 		wantGroups []oscalTypes.Group
-		wantValid  bool
+		wantErr    bool
 	}{
 		{
 			name:     "Good AIGF",
@@ -91,33 +92,26 @@ func TestToOSCALCatalog(t *testing.T) {
 					},
 				},
 			},
-			wantValid: true,
+			wantErr: false,
 		},
 		{
-			name:      "Failure/EmptyGuidance",
-			guidance:  GuidanceDocument{},
-			wantValid: false,
+			name:     "Failure/EmptyGuidance",
+			guidance: GuidanceDocument{},
+			wantErr:  true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			catalog, err := tt.guidance.ToOSCALCatalog()
-			require.NoError(t, err)
-
-			oscalModels := oscalTypes.OscalModels{
-				Catalog: &catalog,
-			}
-
-			validator, err := oscalValidation.NewValidatorDesiredVersion(oscalModels, oscalVersion)
-			require.NoError(t, err)
-			err = validator.Validate()
-
-			if !tt.wantValid {
-				require.Error(t, err)
+			if tt.wantErr {
+				assert.Error(t, err)
 			} else {
-				require.NoError(t, err)
-
+				oscalDocument := oscalTypes.OscalModels{
+					Catalog: &catalog,
+				}
+				err = oscalUtils.Validate(oscalDocument)
+				assert.NoError(t, err)
 				assert.Equal(t, tt.wantGroups, *catalog.Groups)
 			}
 		})
@@ -156,6 +150,7 @@ func TestToOSCALProfile(t *testing.T) {
 	tests := []struct {
 		name        string
 		guidance    GuidanceDocument
+		options     []GenerateOption
 		wantImports []oscalTypes.Import
 	}{
 		{
@@ -190,21 +185,45 @@ func TestToOSCALProfile(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:     "Success/WithImportOverride",
+			guidance: guidanceWithImports,
+			options: []GenerateOption{
+				WithOSCALImports(map[string]string{
+					"EXP": "https://example.com/oscal",
+				}),
+			},
+			wantImports: []oscalTypes.Import{
+				{
+					Href: "https://example.com/oscal",
+					IncludeControls: &[]oscalTypes.SelectControlById{
+						{
+							WithIds: &[]string{
+								"ex-1",
+								"ex-1.2",
+								"ex-2",
+							},
+						},
+					},
+				},
+				{
+					Href:       "testHref",
+					IncludeAll: &oscalTypes.IncludeAll{},
+				},
+			},
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			profile, err := tt.guidance.ToOSCALProfile("testHref")
+			profile, err := tt.guidance.ToOSCALProfile("testHref", tt.options...)
 			require.NoError(t, err)
-			oscalModels := oscalTypes.OscalModels{
+			oscalDocument := oscalTypes.OscalModels{
 				Profile: &profile,
 			}
-			validator, err := oscalValidation.NewValidatorDesiredVersion(oscalModels, oscalVersion)
-			require.NoError(t, err)
-			err = validator.Validate()
-			require.NoError(t, err)
+			assert.NoError(t, oscalUtils.Validate(oscalDocument))
 
-			require.Equal(t, tt.wantImports, profile.Imports)
+			assert.Equal(t, tt.wantImports, profile.Imports)
 		})
 	}
 }
