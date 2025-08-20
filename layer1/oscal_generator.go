@@ -42,14 +42,14 @@ func WithVersion(version string) GenerateOption {
 }
 
 // WithOSCALImports is a GenerateOption that provides the `href` to guidance document mappings in OSCAL
-// by mapping unique identifier. If unset, the mapping URL is the guidance document will be used.
+// by mapping unique identifier. If unset, the mapping URL of the guidance document will be used.
 func WithOSCALImports(imports map[string]string) GenerateOption {
 	return func(opts *generateOpts) {
 		opts.imports = imports
 	}
 }
 
-// WithCanonicalHrefFormat is a GenerateOptions that provides an `href` format string
+// WithCanonicalHrefFormat is a GenerateOption that provides an `href` format string
 // for the canonical version of the guidance document. If set, this will be added as a
 // link in the metadata with the rel="canonical" attribute. Ex - https://myguidance.org/versions/%s
 func WithCanonicalHrefFormat(canonicalHref string) GenerateOption {
@@ -100,7 +100,7 @@ func (g *GuidanceDocument) ToOSCALProfile(guidanceDocHref string, opts ...Genera
 		}
 	}
 
-	// Add an import for all the control defined locally in the Layer 1 Guidance Document
+	// Add an import for each control defined locally in the Layer 1 Guidance Document
 	// `ToOSCALCatalog` would need to be used to create an OSCAL Catalog for the document.
 	localImport := oscal.Import{
 		Href:       guidanceDocHref,
@@ -182,7 +182,7 @@ func createMetadata(guidance *GuidanceDocument, opts generateOpts) (oscal.Metada
 
 	authorRole := oscal.Role{
 		ID:          "author",
-		Description: "Author and owner of the this document",
+		Description: "Author and owner of the document",
 		Title:       "Author",
 	}
 
