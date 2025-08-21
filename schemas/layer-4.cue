@@ -1,37 +1,42 @@
 package schemas
 
-#Layer4: {
-	evaluations: [#ControlEvaluation, ...#ControlEvaluation]
+#EvaluationResults: {
+	"evaluation-set": [#ControlEvaluation, ...#ControlEvaluation] @go(EvaluationSet)
+	...
 }
-
-// Types
 
 #ControlEvaluation: {
-	name:                 string
-	"control-id":         string
-	result:               #Result
-	message:              string
-	"documentation-url"?: =~"^https?://[^\\s]+$"
-	"corrupted-state"?:   bool
-	"assessment-results"?: [...#AssessmentResult]
+	name:              string
+	"control-id":      string @go(ControlId)
+	result:            #Result
+	message:           string
+	"corrupted-state": bool @go(CorruptedState)
+	assessments: [...#Assessment]
 }
 
-#AssessmentResult: {
-	result:             #Result
-	name:               string
-	description:        string
-	message:            string
-	"function-address": string
-	change?:            #Change
-	value?:             _
+#Assessment: {
+	"requirement-id": string @go(RequirementId)
+	applicability: [...string]
+	description: string
+	result:      #Result
+	message:     string
+	steps: [...#AssessmentStep]
+	"steps-executed"?: int    @go(StepsExecuted)
+	"run-duration"?:   string @go(RunDuration)
+	value?:            _
+	changes?: {[string]: #Change}
+	recommendation?: string
 }
 
-#Result: "Passed" | "Failed" | "Needs Review"
+#AssessmentStep: string
 
 #Change: {
-	"target-name":    string
-	applied:          bool
-	reverted:         bool
+	"target-name":    string @go(TargetName)
+	description:      string
+	"target-object"?: _ @go(TargetObject)
+	applied?:         bool
+	reverted?:        bool
 	error?:           string
-	"target-object"?: _
 }
+
+#Result: "Not Run" | "Passed" | "Failed" | "Needs Review" | "Not Applicable" | "Unknown"
