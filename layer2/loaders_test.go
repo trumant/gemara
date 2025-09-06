@@ -5,7 +5,7 @@ package layer2
 // - LoadControlFamily
 // - LoadControlFamilyFiles
 // - LoadControlFamiliesFile
-// - loadYamlFromURL (placeholder, pending a URL to test against)
+// - decodeYAMLFromURL (use decodeYAMLFromURL for URL-based YAML decoding)
 // - loadJson (placeholder, pending implementation)
 // - LoadThreat (placeholder, pending implementation)
 // - LoadCapability (placeholder, pending implementation)
@@ -164,7 +164,7 @@ func Test_LoadFiles(t *testing.T) {
 	}
 }
 
-func Test_loadYamlFromURL(t *testing.T) {
+func Test_decodeYAMLFromURL(t *testing.T) {
 	tests := []struct {
 		name          string
 		sourcePath    string
@@ -186,18 +186,18 @@ func Test_loadYamlFromURL(t *testing.T) {
 			name:          "Valid URL with invalid data",
 			sourcePath:    "https://github.com/ossf/security-insights-spec/releases/download/v2.0.0/template-minimum.yml",
 			wantErr:       true,
-			errorExpected: "failed to decode YAML from URL:",
+			errorExpected: "error decoding YAML:",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			data := &Catalog{}
-			err := loadYamlFromURL(tt.sourcePath, data)
+			err := decodeYAMLFromURL(tt.sourcePath, data)
 			if err != nil && tt.wantErr {
 				assert.Containsf(t, err.Error(), tt.errorExpected, "expected error containing %q, got %s", tt.errorExpected, err)
 			} else if err == nil && tt.wantErr {
-				t.Errorf("loadYamlFromURL() expected error matching %s, got nil.", tt.errorExpected)
+				t.Errorf("decodeYAMLFromURL() expected error matching %s, got nil.", tt.errorExpected)
 			}
 		})
 	}

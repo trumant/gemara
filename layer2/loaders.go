@@ -4,53 +4,51 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
 	"github.com/goccy/go-yaml"
 )
 
-// loadYamlFromURL is a sub-function of loadYaml for HTTP only. It takes a URL as a sourcePath and a pointer to a Catalog object.
-func loadYamlFromURL(sourcePath string, data *Catalog) error {
-	resp, err := http.Get(sourcePath)
+// decodeYAMLFromReader decodes YAML from an io.Reader into the provided target.
+func decodeYAMLFromReader(reader io.Reader, target interface{}) error {
+	decoder := yaml.NewDecoder(reader, yaml.DisallowUnknownField())
+	if err := decoder.Decode(target); err != nil {
+		return fmt.Errorf("error decoding YAML: %w", err)
+	}
+	return nil
+}
+
+// decodeYAMLFromURL fetches a URL and decodes YAML into the provided target.
+func decodeYAMLFromURL(sourceURL string, target interface{}) error {
+	resp, err := http.Get(sourceURL)
 	if err != nil {
 		return fmt.Errorf("failed to fetch URL: %v", err)
 	}
-	defer func() {
-		_ = resp.Body.Close()
-	}()
-
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to fetch URL; response status: %v", resp.Status)
 	}
+	return decodeYAMLFromReader(resp.Body, target)
+}
 
-	err = decode(resp.Body, data)
+// decodeYAMLFromFile opens a file and decodes YAML into the provided target.
+func decodeYAMLFromFile(filePath string, target interface{}) error {
+	file, err := os.Open(filePath)
 	if err != nil {
-		return fmt.Errorf("failed to decode YAML from URL: %v", err)
+		return fmt.Errorf("error opening file: %w", err)
 	}
-	return nil
+	defer file.Close()
+	return decodeYAMLFromReader(file, target)
 }
 
 // loadYaml opens a provided path to unmarshal its data as YAML. It takes a URL or local path to a file as a sourcePath and a pointer to a Catalog object.
 func loadYaml(sourcePath string, data *Catalog) error {
 	if strings.HasPrefix(sourcePath, "http") {
-		return loadYamlFromURL(sourcePath, data)
+		return decodeYAMLFromURL(sourcePath, data)
 	}
-
-	file, err := os.Open(sourcePath)
-	if err != nil {
-		return fmt.Errorf("error opening file: %w", err)
-	}
-
-	defer func() {
-		_ = file.Close()
-	}()
-
-	err = decode(file, data)
-	if err != nil {
-		return fmt.Errorf("error decoding YAML: %w (%s)", err, sourcePath)
-	}
-	return nil
+	return decodeYAMLFromFile(sourcePath, data)
 }
 
 // loadJson opens a provided path to unmarshal its data as JSON. It takes a URL or local path to a file as a sourcePath and a pointer to a Catalog object.
@@ -93,75 +91,48 @@ func (c *Catalog) LoadFile(sourcePath string) error {
 	return nil
 }
 
-// Load a yaml file that contains a nested catalog
-// Only supports a single layer of nesting
+// LoadNestedCatalog loads a YAML file containing a nested catalog.
+// Only supports a single layer of nesting.
+// Accepts file URIs with the 'file:///' prefix.
+// Throws an error if the URL is not https.
+// TODO: Consider validating/sanitizing inputs to reduce injection risks.
 func (c *Catalog) LoadNestedCatalog(sourcePath, fieldName string) error {
 	if fieldName == "" {
 		return fmt.Errorf("fieldName cannot be empty")
 	}
 
 	var yamlData map[string]interface{}
-
-	if strings.HasPrefix(sourcePath, "http") {
-		resp, err := http.Get(sourcePath)
-		if err != nil {
-			return fmt.Errorf("failed to fetch URL: %v", err)
-		}
-		defer func() {
-			_ = resp.Body.Close()
-		}()
-		if resp.StatusCode != http.StatusOK {
-			return fmt.Errorf("failed to fetch URL; response status: %v", resp.Status)
-		}
-
-		decoder := yaml.NewDecoder(resp.Body)
-		err = decoder.Decode(&yamlData)
-		if err != nil {
-			return fmt.Errorf("failed to decode YAML from URL: %v", err)
-		}
-	} else {
-		file, err := os.Open(sourcePath)
-		if err != nil {
-			return fmt.Errorf("error opening file: %w", err)
-		}
-		defer func() {
-			_ = file.Close()
-		}()
-
-		decoder := yaml.NewDecoder(file)
-		err = decoder.Decode(&yamlData)
-		if err != nil {
-			return fmt.Errorf("error decoding YAML: %w (%s)", err, sourcePath)
-		}
+	parsedURL, err := url.Parse(sourcePath)
+	if err != nil {
+		return fmt.Errorf("failed to parse sourcePath: %w", err)
 	}
 
-	// Now that we've decoded the data, we need to un-nest it and re-marshal it to finally decode into the Catalog struct
+	switch parsedURL.Scheme {
+	case "http":
+		return fmt.Errorf("insecure http URLs are not allowed: %s", sourcePath)
+	case "https":
+		err = decodeYAMLFromURL(sourcePath, &yamlData)
+		if err != nil {
+			return err
+		}
+	case "file":
+		err = decodeYAMLFromFile(parsedURL.Path, &yamlData)
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("unsupported sourcePath scheme: %s", parsedURL.Scheme)
+	}
 
 	fieldData, exists := yamlData[fieldName]
 	if !exists {
 		return fmt.Errorf("field '%s' not found in YAML file", fieldName)
 	}
-
 	fieldYamlBytes, err := yaml.Marshal(fieldData)
 	if err != nil {
 		return fmt.Errorf("error marshaling field data to YAML: %w", err)
 	}
-
-	decoder := yaml.NewDecoder(strings.NewReader(string(fieldYamlBytes)))
-	err = decoder.Decode(c)
-	if err != nil {
-		return fmt.Errorf("error decoding field '%s' into Catalog: %w", fieldName, err)
-	}
-
-	return nil
+	return decodeYAMLFromReader(strings.NewReader(string(fieldYamlBytes)), c)
 }
 
-// decode unmarshals the provided reader into the provided Catalog object.
-func decode(reader io.Reader, data *Catalog) error {
-	decoder := yaml.NewDecoder(reader, yaml.DisallowUnknownField())
-	err := decoder.Decode(data)
-	if err != nil {
-		return fmt.Errorf("error decoding YAML: %w", err)
-	}
-	return nil
-}
+// ...existing code...
