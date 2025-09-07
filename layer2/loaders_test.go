@@ -183,10 +183,9 @@ func Test_loadYamlFromURL(t *testing.T) {
 			wantErr:    false,
 		},
 		{
-			name:          "Valid URL with invalid data",
-			sourcePath:    "https://github.com/ossf/security-insights-spec/releases/download/v2.0.0/template-minimum.yml",
-			wantErr:       true,
-			errorExpected: "failed to decode YAML from URL:",
+			name:       "Valid URL with non-compatible content",
+			sourcePath: "https://github.com/ossf/security-insights-spec/releases/download/v2.0.0/template-minimum.yml",
+			wantErr:    false, // We no longer fail on unknown fields, only malformed
 		},
 	}
 
@@ -197,7 +196,7 @@ func Test_loadYamlFromURL(t *testing.T) {
 			if err != nil && tt.wantErr {
 				assert.Containsf(t, err.Error(), tt.errorExpected, "expected error containing %q, got %s", tt.errorExpected, err)
 			} else if err == nil && tt.wantErr {
-				t.Errorf("loadYamlFromURL() expected error matching %s, got nil.", tt.errorExpected)
+				t.Error("loadYamlFromURL() expected error, got none.")
 			}
 		})
 	}
