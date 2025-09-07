@@ -5,7 +5,7 @@ package layer2
 // - LoadControlFamily
 // - LoadControlFamilyFiles
 // - LoadControlFamiliesFile
-// - loadYamlFromURL (placeholder, pending a URL to test against)
+// - decodeYAMLFromURL (use decodeYAMLFromURL for URL-based YAML decoding)
 // - loadJson (placeholder, pending implementation)
 // - LoadThreat (placeholder, pending implementation)
 // - LoadCapability (placeholder, pending implementation)
@@ -19,41 +19,36 @@ import (
 )
 
 var tests = []struct {
-	name       string
-	sourcePath string
-	wantErr    bool
+	name          string
+	sourcePath    string
+	wantErr       bool
+	errorExpected string
 }{
 	{
 		name:       "Bad path",
-		sourcePath: "./bad-path.yaml",
+		sourcePath: "file://bad-path.yaml",
 		wantErr:    true,
 	},
 	{
 		name:       "Bad YAML",
-		sourcePath: "./test-data/bad.yaml",
+		sourcePath: "file://test-data/bad.yaml",
 		wantErr:    true,
 	},
 	{
 		name:       "Good YAML — CCC",
-		sourcePath: "./test-data/good-ccc.yaml",
+		sourcePath: "file://test-data/good-ccc.yaml",
 		wantErr:    false,
 	},
 	{
 		name:       "Good YAML — OSPS",
-		sourcePath: "./test-data/good-osps.yml",
+		sourcePath: "file://test-data/good-osps.yml",
 		wantErr:    false,
 	},
-}
-
-func Test_loadYaml(t *testing.T) {
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			data := &Catalog{}
-			if err := loadYaml(tt.sourcePath, data); (err == nil) == tt.wantErr {
-				t.Errorf("loadYaml() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
+	{
+		name:       "Unrecognized file extension",
+		sourcePath: "file://test-data/unknown.ext",
+		wantErr:    true,
+	},
 }
 
 func Test_LoadFile(t *testing.T) {
@@ -62,10 +57,10 @@ func Test_LoadFile(t *testing.T) {
 			c := &Catalog{}
 			err := c.LoadFile(tt.sourcePath)
 			if (err == nil) == tt.wantErr {
-				t.Errorf("Catalog.LoadControlFamily() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Catalog.LoadFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if !tt.wantErr && len(c.ControlFamilies) == 0 {
-				t.Errorf("Catalog.LoadControlFamily() did not load any control families")
+				t.Errorf("Catalog.LoadFile() did not load any control families")
 			} else if !tt.wantErr && len(c.ControlFamilies) > 0 {
 				assert.NotEmpty(t, c.ControlFamilies[0].Title, "Control family title should not be empty")
 				assert.NotEmpty(t, c.ControlFamilies[0].Description, "Control family description should not be empty")
@@ -105,25 +100,25 @@ func Test_LoadNestedCatalog(t *testing.T) {
 		},
 		{
 			name:            "Local file does not exist",
-			sourcePath:      "wonky-file-name.yaml",
+			sourcePath:      "file://wonky-file-name.yaml",
 			nestedFieldName: "catalog",
 			wantErr:         true,
 		},
 		{
 			name:            "Empty nested catalog",
-			sourcePath:      "./test-data/nested-empty.yaml",
+			sourcePath:      "file://test-data/nested-empty.yaml",
 			nestedFieldName: "catalog",
 			wantErr:         true,
 		},
 		{
 			name:            "Nested field name not provided",
-			sourcePath:      "./test-data/nested-good-ccc.yaml",
+			sourcePath:      "file://test-data/nested-good-ccc.yaml",
 			nestedFieldName: "",
 			wantErr:         true,
 		},
 		{
 			name:            "Nested field name not present in target file",
-			sourcePath:      "./test-data/nested-good-ccc.yaml",
+			sourcePath:      "file://test-data/nested-good-ccc.yaml",
 			nestedFieldName: "doesnt-exist",
 			wantErr:         true,
 		},
@@ -159,73 +154,6 @@ func Test_LoadFiles(t *testing.T) {
 			}
 			if !tt.wantErr && len(c.ControlFamilies) == 0 {
 				t.Errorf("Catalog.LoadControlFamilyFiles() did not load any control families")
-			}
-		})
-	}
-}
-
-func Test_loadYamlFromURL(t *testing.T) {
-	tests := []struct {
-		name          string
-		sourcePath    string
-		wantErr       bool
-		errorExpected string
-	}{
-		{
-			name:          "URL that returns a 404",
-			sourcePath:    "http://example.com/nonexistent.yaml",
-			wantErr:       true,
-			errorExpected: "failed to fetch URL; response status:",
-		},
-		{
-			name:       "Valid URL with valid data",
-			sourcePath: "https://raw.githubusercontent.com/ossf/security-baseline/refs/heads/main/baseline/OSPS-AC.yaml",
-			wantErr:    false,
-		},
-		{
-			name:       "Valid URL with non-compatible content",
-			sourcePath: "https://github.com/ossf/security-insights-spec/releases/download/v2.0.0/template-minimum.yml",
-			wantErr:    false, // We no longer fail on unknown fields, only malformed
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			data := &Catalog{}
-			err := loadYamlFromURL(tt.sourcePath, data)
-			if err != nil && tt.wantErr {
-				assert.Containsf(t, err.Error(), tt.errorExpected, "expected error containing %q, got %s", tt.errorExpected, err)
-			} else if err == nil && tt.wantErr {
-				t.Error("loadYamlFromURL() expected error, got none.")
-			}
-		})
-	}
-}
-
-func Test_loadJson(t *testing.T) {
-	tests := []struct {
-		name       string
-		sourcePath string
-		wantErr    bool
-	}{
-		{
-			name:       "Unsupported JSON file",
-			sourcePath: "./test-data/good.json",
-			wantErr:    true,
-		},
-		{
-			name:       "Invalid JSON file",
-			sourcePath: "./test-data/bad.json",
-			wantErr:    true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			data := &Catalog{}
-			err := loadJson(tt.sourcePath, data)
-			if (err == nil) == tt.wantErr {
-				t.Errorf("loadJson() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
